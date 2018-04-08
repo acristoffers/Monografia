@@ -5,12 +5,12 @@
 
 \begin{abstract}
     Observadores permitem que o estado do sistema seja estimado dada sua saída.
-    Sistemas a parâmetros distribuídos (SPD) podem ser utilizados com
+    Sistemas a parâmetros distribuídos (\ac{SPD}) podem ser utilizados com
     observadores para recuperar informações ao longo do processo. Assim pode-se,
     por exemplo, medir-se a temperatura na extremidade de um sólido e, através
     desta, recuperar-se a temperatura em algum ponto no meio do sólido. Controle
-    preditivo baseado em modelo (MPC --- \textit{model predictive control}) é
-    uma técnica avançada de controle que lida com restrições. Ela já está
+    preditivo baseado em modelo (\ac{MPC} --- \textit{model predictive control})
+    é uma técnica avançada de controle que lida com restrições. Ela já está
     estabelecida em indústrias que lidam com processos multi-variáveis de
     dinâmica lenta, especialmente na indústria petro-química. Ao combinar as
     duas técnicas é possível não apenas controlar uma variável em um ponto
@@ -20,21 +20,22 @@
     técnicas sejam bem discutidas isoladamente, há poucos artigos onde as duas
     são usadas em conjunto, o que sugere a existência de um campo a ser
     explorado. Assim propõe-se o desenvolvimento e a implementação de um
-    controlador MPC que utilize SPD para realizar o controle de uma variável
-    estimada em um ponto intermediário. Para isso será utilizada a planta
-    presente no laboratório de sinais e sistemas. O modelo SPD utilizado será o
-    desenvolvido por~\textcite{masterthesis:nelson}. A implementação será feita
-    utilizando os softwares \textit{Moirai} e \textit{Lachesis}, desenvolvidos
-    \textit{in loco}, o que irá requerer modificações nos mesmos para
-    funcionarem com as especificidades da planta. Também será feita alteração na
-    microeletrônica da planta, com a finalidade de prover um meio alternativo
-    para acionamento do forno. As modificações de hardware e software, em
-    conjunto, permitirão maior flexibilidade no uso da planta, além de maior
-    facilidade de uso. Pretende-se com este trabalho, que envolve principalmente
-    as áreas de controle e computação, aprofundar os estudos do grupo de
-    modelagem e controle de processos em SPD com a metodologia de controle
-    proposta, bem como facilitar futuros trabalhos na planta utilizada através
-    do melhor desenvolvimento e teste da plataforma de controle.
+    controlador \ac{MPC} que utilize \ac{SPD} para realizar o controle de uma
+    variável estimada em um ponto intermediário. Para isso será utilizada a
+    planta presente no laboratório de sinais e sistemas. O modelo \ac{SPD}
+    utilizado será o desenvolvido por~\textcite{masterthesis:nelson}. A
+    implementação será feita utilizando os softwares \textit{Moirai} e
+    \textit{Lachesis}, desenvolvidos \textit{in loco}, o que irá requerer
+    modificações nos mesmos para funcionarem com as especificidades da planta.
+    Também será feita alteração na microeletrônica da planta, com a finalidade
+    de prover um meio alternativo para acionamento do forno. As modificações de
+    hardware e software, em conjunto, permitirão maior flexibilidade no uso da
+    planta, além de maior facilidade de uso. Pretende-se com este trabalho, que
+    envolve principalmente as áreas de controle e computação, aprofundar os
+    estudos do grupo de modelagem e controle de processos em \ac{SPD} com a
+    metodologia de controle proposta, bem como facilitar futuros trabalhos na
+    planta utilizada através do melhor desenvolvimento e teste da plataforma de
+    controle.
 \end{abstract}
 
 Palavras-chave: Controle preditivo por modelo, sistema a parâmetros

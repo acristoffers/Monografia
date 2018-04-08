@@ -1,71 +1,123 @@
 % !TeX root = document.tex
 % !TeX encoding = UTF-8 Unicode
 
-\chapter*{Introdução e Contextualização}%
-\label{introducao}
+\chapter{Introdução}%
+\label{chp:introducao}
 
-MPC é uma técnica de controle avançada que utiliza o modelo do sistema para
+\ac{MPC} é uma técnica de controle avançada que utiliza o modelo do sistema para
 prever a saída em momentos futuros e, com isso, gerar uma estratégia de
 controle. Para isso é utilizado o conceito de controle por horizonte recessivo,
-onde a o sinal de ótimo controle é planejado para os próximos \(N_c\) instantes,
+onde a o sinal de controle ótimo é planejado para os próximos \(N_c\) instantes,
 mas apenas o primeiro é utilizado, recalculando-se toda a estratégia no instante
-seguinte, de forma a possibilitar a reação à possíveis distúrbios.
+seguinte, de forma a possibilitar a reação à possíveis
+distúrbios~\cite{book:wang}.
 
-Algumas vantagens desta técnica é que os conceitos utilizados são simples e
-fáceis de serem transformados em módulos reutilizáveis, além de ser possível
-utilizar a técnica tanto para gerar controladores primários, que atuam
-diretamente no sistema, quanto supervisórios, que gerenciam um conjunto de
-controladores mais baixos na hierarquia. Sua principal vantagem, no entanto, é
-que pode-se modelar restrições físicas, como saturação de entrada e saída ou
-taxa de modificação destas grandezas, diretamente no controlador
-(\textcite{book:wang}).
-
-Por exemplo, a inserção das restrições na variável de controle no modelo do
-controlador torna a resposta diferente da resposta gerada por controladores onde
-a restrição é imposta após a geração do sinal de controle, sem que o controlador
-tome ciência da mesma. Com a restrição exógena, como quando se usa a técnica de
-\textit{anti-windup}, o controlador continua gerando sinais de controle que irão
-saturar e não irão, de fato, alterar a resposta além deste limite físico. Quando
-o modelo tem ciência desta limitação, no entanto, ele tende a gerar sinais de
-controle que irão fazer o melhor o possível dentro da faixa de saturação, até
-mesmo trabalhando com a mesma, mas de forma mais \enquote{consciente}, que
-dizer, sabendo que o atuador está saturado.
-
-Normalmente utiliza-se sistemas a parâmetros concentrados (SPC) para modelar
+Normalmente utiliza-se sistemas a parâmetros concentrados (\ac{SPC}) para modelar
 sistemas físicos. Nesses sistemas as variáveis de interesse se alteram apenas no
-domínio do tempo. Em sistemas a parâmetros distribuídos (SPD), no entanto, a
+domínio do tempo. Em sistemas a parâmetros distribuídos (\ac{SPD}), no entanto, a
 variável de interesse também depende do espaço. Tais sistemas são normalmente
-representados por equações diferenciais parciais
-(\textcite{masterthesis:nelson}).
+representados por equações diferenciais parciais~\cite{masterthesis:nelson}.
 
-Tomando o forno do Laboratório de Sinais e Sistemas como exemplo podemos ver na
-Figura~\ref{fig:sensors-spd} os sensores \(S_1\) a \(S_5\) e o fluxo de ar
-quente q. Imagine que queiramos controlar a temperatura na posição onde
-encontra-se o sensor \(S_3\), mas que apenas o sensor \(S_5\) esteja
-funcionando. Com um modelo SPD podemos ter dois modelos SPC\@: um que modele o
-fluxo de temperatura até o sensor \(S_3\) e um outro que modele de \(S_3\) até
-\(S_5\), ambos interconectados. Desta forma podemos utilizar um observador e a
-leitura do sensor \(S_5\) para estimar a temperatura no sensor \(S_3\), e
-controlá-la mesmo sem fazer sua medição direta.
+O observador é um sistema que estima os estados de um modelo baseado nas
+entradas e saídas do mesmo. O observador de Kalman, também conhecido como filtro
+de Kalman, é uma formulação que permite estimar o modelo de forma precisa mesmo
+na presença de ruídos, seja na leitura da saída ou dos próprios
+estados~\cite{book:wang}.
+
+\section{Definição do Problema}%
+\label{sec:definicao-do-problema}
+
+A Figura~\ref{fig:sensors-SPD} mostra os sensores do forno presente no
+Laboratório de Sinais e Sistemas. Nela podemos ver os sensores \(S_1\) a \(S_5\)
+e o fluxo de ar quente \( q \). Imagine que queiramos controlar a temperatura na
+posição onde encontra-se o sensor \(S_3\), mas que apenas o sensor \(S_5\)
+esteja funcionando. Com um modelo \ac{SPD} podemos ter dois modelos \ac{SPC}\@:
+um que modele o fluxo de temperatura até o sensor \(S_3\) e um outro que modele
+de \(S_3\) até \(S_5\), ambos interconectados. Desta forma podemos utilizar um
+observador e a leitura do sensor \(S_5\) para estimar a temperatura no sensor
+\(S_3\), e controlá-la mesmo sem fazer sua medição direta.
 
 \begin{figure}[ht!]
     \centering
     \captionsetup{justification=centering}
     \includegraphics[height=0.5\linewidth]{imgs/planta-spd}
     \caption{Sensores da planta}%
-    \label{fig:sensors-spd}
+    \label{fig:sensors-SPD}
 \end{figure}
 
-O observador é um sistema que estima os estados de um modelo baseado nas
-entradas e saídas do mesmo. O observador de Kalman, também conhecido como filtro
-de Kalman, é uma formulação que permite estimar o modelo de forma precisa mesmo
-na presenta de ruídos, seja na leitura da saída ou dos próprios estados.
+Propõe-se o desenvolvimento de controladores \ac{MPC} que utilizem os modelos
+\ac{SPD} gerados pelo~\textcite{masterthesis:nelson} para controlar o processo
+do forno conforme descrito acima. Além disso, os mesmos devem ser implementados
+de forma a serem executados na plataforma desenvolvida pelo autor em sua
+iniciação científica, utilizando esta oportunidade para corrigir problemas
+encontrados e dar continuidade ao desenvolvimento da mesma.
 
-O uso de controladores MPC com modelos SPD não é novo. Sua maior aplicação, no
-entanto, continua sendo na área da química e fabricação de aço. Assim esta
-proposta visa o desenvolvimento de um controlador que utiliza técnicas
-conhecidas de uma maneira não convencional. Espera-se com isto mostrar a
-eficiência desta combinação (\textcite{article:shang}).
+\section{Objetivos}%
+\label{sec:objectives}
+
+Desenvolver um controlador do tipo \ac{MPC} com restrições com modelo \ac{SPD}
+utilizando observadores do tipo Kalman e implementá-lo utilizando e adaptando a
+plataforma de controle desenvolvida pelo proponente para uso no forno do
+laboratório de sinais e sistemas. O objetivo pode ser assim dividido:
+
+\begin{itemize}
+      \item modificar a eletrônica da planta: instalar circuitos
+            microprocessados com o intuito de controlar o acionamento do forno,
+            fornecendo um caminho alternativo ao acionamento que já está
+            implementado e permitindo a integração com a plataforma de controle;
+      \item modificar a plataforma de controle: desenvolver driver específico
+            para o forno, de forma a tornar o acionamento dos atuadores e a
+            leitura dos sensores mais simples e direto para os futuros usuários;
+      \item desenvolver o controlador \ac{MPC}\@: utilizar o modelo \ac{SPD}
+            desenvolvido pelo~\textcite{masterthesis:nelson} para desenvolver um
+            controlador \ac{MPC} com restrições na entrada e saída de forma a
+            controlar a temperatura em um ponto diferente daquele onde está
+            fisicamente instalado o sensor;
+      \item implementar o controlador: utilizar a linguagem Python e a
+            plataforma de controle para implementar o controlador e executar o
+            controle da planta;
+      \item comparar o desempenho do controlador: usar índices de desempenho
+            para comparar o desempenho do controlador \ac{MPC} com controladores
+            PI a serem desenvolvidos utilizando as técnicas
+            de~\textcite{article:clarke} e~\textcite{article:martins};
+      \item realizar melhorias na plataforma: ao utilizar a plataforma como
+            usuário, espera-se encontrar dificuldades, erros e novas ideias que
+            serão ser corrigidos/implementadas, como, por exemplo, recuperação
+            de mensagens de erro salvas no banco de dados e exibição para o
+            usuário e verificação de sintaxe de código digitado pelo usuário.
+\end{itemize}
+
+\section{Motivação}%
+\label{sec:motivacao}
+
+A principal motivação para o trabalho é poder fazer o controle de um processo
+sem medir diretamente a variável controlada. Isto é interessante pois nem sempre
+é possível medir diretamente a grandeza que se deseja controlar, seja por
+restrições físicas (como colocar um sensor no centro de um alto-forno?) ou por
+questões financeiras.
+
+O controlador \ac{MPC} se tornou interessante por ser uma técnica avançada de
+controle que ainda não é estudada no \textit{campus V}. Assim, além da
+possibilidade de estudar uma técnica avançada, este trabalho contribui por ser o
+primeiro trabalho a utilizar tal controlador no Grupo de Controle e Modelagem de
+Sistemas Mecatrônicos.
+
+\section{Estado da arte}%
+\label{sec:estado-da-arte}
+
+O uso de controladores \ac{MPC} com modelos \ac{SPD} não é novo. Sua maior
+aplicação, no entanto, continua sendo na área da química e fabricação de aço.
+Ele foi desenvolvido inicialmente para controle de processos químicos, onde o
+equipamento é caro, o processo é lento e contém várias entradas e saídas que
+devem ser restringidas arbitrariamente~\cite{article:cairano}.
+
+Este cenário está mudando e outras indústrias --- com modelos com poucas
+entradas e saídas, custo mais baixo e dinâmica mais rápida --- estão adotodando
+os controladores \ac{MPC}\@. No entanto isso apresenta alguns desafios no
+desenvolvimento de controladores, pois o \textit{framework} \ac{MPC} não foi
+desenvolvido para tais sistemas e possui limitações como, por exemplo, o alto
+custo computacional. Trabalhos já estão sendo desenvolvidos para minimizar ou
+sanir tais problemas.
 
 Em ambientes industriais é comum o uso de computadores lógicos programáveis para
 fazer a interface com o hardware. No meio acadêmico, no entanto, utiliza-se
@@ -79,24 +131,12 @@ concentre nestes estudos e não se preocupe com detalhes da implementação d
 aquisição dos dados. Tal ferramenta também permitiria ao pesquisador
 interagir com CLPs, desenvolvendo e testando controladores de forma fácil em
 uma linguagem simples (Python) sem se preocupar com todas as nuâncias das
-linguagens LADDER utilizadas nos PLCs, podendo implementar seu controlador nesta
-linguagem limitada apenas ao final, quando este tiver sido devidamente testado.
+linguagens LADDER utilizadas nos CLPs, podendo implementar seu controlador nesta
+linguagem limitada apenas ao final, quando este tiver sido devidamente testado e
+otimizado.
 
 A aplicação de uma plataforma para controle em todos as plantas do laboratório
 permite que os usuários possam migrar de uma planta para outra sem dificuldades.
 Também permite que controladores e observadores desenvolvidos sejam testados em
 diferentes plantas com poucas modificações, já que as interfaces seriam as
 mesmas em todas elas.
-
-\noindent
-{\textbf Áreas envolvidas}
-
-A principal área deste trabalho é controle, por ter o maior peso teórico e de
-desenvolvimento. No entanto o trabalho também contempla as áreas de elétrica,
-pelas modificações que serão feitas na eletrônica de acionamento e aquisição de
-dados do forno, e computação, pelas modificações que serão feitas na plataforma
-de controle para que esta possa se comunicar com o hardware e as modificações
-que serão feitas para corrigir defeitos e implementar melhorias, como, por
-exemplo, recuperar o erro do banco de dados e exibir para o usuário e, caso
-possível, gerar mensagens de erro mais informativas, que apontam o lugar do
-erro.
