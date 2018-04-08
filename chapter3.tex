@@ -1,0 +1,59 @@
+% !TeX root = document.tex
+% !TeX encoding = UTF-8 Unicode
+
+\chapter{Metodologia}%
+\label{sec:methodology}
+
+Para que a plataforma de controle possa se comunicar com o forno do laboratório
+de sinais e sistemas será necessário modificar o circuito de acionamento da
+mesma. Para isso serão utilizados circuitos microcontrolados que irão se
+comunicar com o circuito de acionamento e sensoriamento presente na mesma. Um
+estudo da forma como isso é feito hoje será realizado com a finalidade de
+inserir um circuito paralelo ao atual, de forma que o usuário possa escolher
+qual circuito de acionamento e aquisição de dados será utilizado.
+
+Esse novo circuito será programado para se comunicar com a plataforma de
+controle. Um \textit{driver} será escrito para a mesma para permitir o controle
+dos atuadores e leitura dos sensores de forma transparente e específica para
+este sistema. O \textit{driver} irá abstrair a interface com o hardware de forma
+que o usuário não tenha que se preocupar com detalhes da implementação, como
+número de porta e pino, tensões de operação, etc.
+
+Para que se possa trabalhar com a planta também será necessário calibrar todos
+os sensores e atuadores, além de se fazer uma conferência dos circuitos
+elétricos, para certificar que estes ainda funcionam de forma correta. Todo este
+procedimento será feito usando-se a plataforma de controle para a aquisição de
+dados. Para isso será necessário estudar os trabalhos
+de~\textcite{misc:nelson} e~\textcite{misc:valle-silva}. Como
+prova de conceito, também será utilizado um computador portátil de baixo custo
+para o controle da planta.
+
+Os modelos levantados por~\textcite{masterthesis:nelson} serão validados no
+sistema físico. Isto é necessário para verificar que não houve alterações
+significativas no sistema desde o seu desenvolvimento. Para o uso destes modelos
+será necessário estudar sobre sistemas a parâmetros distribuídos e observadores
+de Kalman.
+
+O controlador MPC será discreto no tempo e baseado em modelo em espaço de
+estados, logo será necessário estudar sobre controle digital e modelagem em
+espaço de estados, além da própria técnica de controle. Para isto serão
+utilizados, principalmente, os livros do~\textcite{book:dorf},
+do~\textcite{book:ogata}, do~\textcite{book:wang} e as notas de aula do
+Professor~\textcite{misc:patwardhan}.
+
+Para o desenvolvimento do controlador será utilizado o modelo SPD e serão
+determinadas restrições do sinal de controle. Os estados utilizados no
+controlador serão os provenientes do observador do tipo Kalman utilizado
+pelo~\textcite{masterthesis:nelson}.
+
+Para comparar o desempenho do controlador MPC serão desenvolvidos controladores
+PI utilizando as técnicas descritas por~\textcite{article:clarke}
+e~\textcite{article:martins}. Serão utilizados os índices IAE e IVx para
+realizar uma comparação quantitativa dos controladores.
+
+Todos os controladores serão implementados utilizando a plataforma de controle e
+a linguagem de programação Python, assim como todos os testes que requeiram
+acionamento do forno e/ou medição de seus termômetros. Desta forma serão
+corrigidos na plataforma todos os problemas percebidos na mesma do ponto de
+vista de usuário. Também serão implementadas as funcionalidades que se mostrem
+necessárias e/ou desejadas, visando seu aperfeiçoamento.

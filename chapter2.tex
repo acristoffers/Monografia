@@ -1,0 +1,37 @@
+% !TeX root = document.tex
+% !TeX encoding = UTF-8 Unicode
+
+\chapter{Objetivos}%
+\label{sec:objectives}
+
+Desenvolver um controlador do tipo MPC com restrições com modelo SPD utilizando
+observadores do tipo Kalman e implementá-lo utilizando e adaptando a plataforma
+de controle desenvolvida pelo proponente para uso no forno do laboratório de
+sinais e sistemas. O objetivo pode ser assim dividido:
+
+\begin{itemize}
+      \item modificar a eletrônica da planta: instalar circuitos
+            microprocessados com o intuito de controlar o acionamento do forno,
+            fornecendo um caminho alternativo ao acionamento que já está
+            implementado e permitindo a integração com a plataforma de controle;
+      \item modificar a plataforma de controle: desenvolver driver específico
+            para o forno, de forma a tornar o acionamento dos atuadores e a
+            leitura dos sensores mais simples e direto para os futuros usuários;
+      \item desenvolver o controlador MPC\@: utilizar o modelo SPD desenvolvido
+            pelo~\textcite{masterthesis:nelson} para desenvolver um
+            controlador MPC com restrições na entrada e saída de forma a
+            controlar a temperatura em um ponto diferente daquele onde está
+            fisicamente instalado o sensor;
+      \item implementar o controlador: utilizar a linguagem Python e a
+            plataforma de controle para implementar o controlador e executar o
+            controle da planta;
+      \item comparar o desempenho do controlador: usar índices de desempenho
+            para comparar o desempenho do controlador MPC com controladores PI a
+            serem desenvolvidos utilizando as técnicas
+            de~\textcite{article:clarke} e~\textcite{article:martins};
+      \item realizar melhorias na plataforma: ao utilizar a plataforma como
+            usuário, espera-se encontrar dificuldades, erros e novas ideias que
+            serão ser corrigidos/implementadas, como, por exemplo, recuperação
+            de mensagens de erro salvas no banco de dados e exibição para o
+            usuário e verificação de sintaxe de código digitado pelo usuário.
+\end{itemize}

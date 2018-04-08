@@ -1,0 +1,77 @@
+% !TeX root = document.tex
+% !TeX encoding = UTF-8 Unicode
+
+\documentclass[sumario=tradicional,
+              12pt,
+              openright,
+              twoside,
+              a4paper,
+              english,
+              french,
+              brazil]{abntex2}
+
+% Set font in LuaLaTeX and XeLaTeX. Does not work in PDFLaTeX
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\renewcommand{\baselinestretch}{1.5} % Line height of 1.5
+
+% Basics packages
+\usepackage[brazil]{babel}
+\usepackage[useregional]{datetime2}
+\usepackage[style=abnt]{biblatex}
+\usepackage{setspace} % Control line height
+\usepackage[decimalsymbol=comma,
+            input-complex-roots=j,
+            output-complex-root=j,
+            complex-root-position=after-number,
+            loctolang={BR:portuguese,UK:english}]{siunitx} % SI units
+%\edef\pdfcreationdate {\pdffeedback creationdate} % fixes datetime import in LuaLaTeX and XeLaTeX
+\usepackage[top=3cm,bottom=2cm,left=3cm,right=2cm]{geometry}
+
+% Image manipulation
+\usepackage{graphicx} % For images
+\usepackage{rotate} % To rotate images
+\usepackage[section]{placeins} % Prevents figures from floating to wrong places
+\usepackage{epsf}
+\usepackage{caption}
+
+% Math related
+\usepackage{amssymb}
+\usepackage{amsmath} % Mathematic symbols and stuff
+\usepackage{amsfonts} % Mathematical fonts
+\usepackage{cancel} % In math mode, variables to strike
+\usepackage{subscript} % For subscript
+
+% Table manipulation
+\usepackage{longtable} % For long tables that take more than one page
+\usepackage{multirow} % Multirow tables
+\usepackage{tabulary} % Table tabulation
+% Makes the column type L, that is centered and allows line wrap.
+\usepackage{array}
+\newcolumntype{L}{>{\centering\arraybackslash}m{3cm}}
+
+% Utilities
+\usepackage[usenames,dvipsnames]{xcolor} % More colors:
+\usepackage{pdfpages} % Advanced PDF importing
+\usepackage{pdflscape} % One page panorama
+\usepackage[european,cuteinductors,smartlabels]{circuitikz} % For circuits
+\usepackage{indentfirst} % Indents first paragraph after section
+\usepackage{chngcntr} % Change numberings
+\usepackage{csquotes} % \enquote
+\usepackage{url}
+\usepackage{ragged2e} % Justify
+\usepackage{lastpage}
+%\usepackage{fancyhdr} % Set headers and footers
+\usepackage[Lenny]{fncychap} % Square chapter
+\usepackage{acro} % abbreviations and accronyms
+
+\usetikzlibrary{shapes,arrows}
+
+\renewcommand{\rm}{\textrm} % needed with memoir
+\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter. \ #1}{ }}
+\renewcommand{\sectionmark}[1]{\markright{\thesection. \ #1}}
+\renewcommand{\tocheadstart}{\rm}
+\renewcommand{\ABNTEXchapterfont}{\rm}
+\renewcommand{\ABNTEXchapterfontsize}{\huge}
+\ChTitleVar{\ABNTEXchapterfontsize\ABNTEXchapterfont}
+\setsecheadstyle{\bfseries\Large}

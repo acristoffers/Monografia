@@ -1,0 +1,82 @@
+% !TeX program = xelatex
+% !TeX encoding = UTF-8 Unicode
+% !BIB program = biber
+
+\input{meta}
+\input{cefetpagestyle}
+\input{abbr}
+\selectlanguage{brazil}
+
+\title{Cerâmica e Polímeros}
+
+\titulo{\huge{Cerâmica e Polímeros}\\~\\\tiny{Materiais de Construção Mecânica}}
+\autor{Álan Crístoffer e Sousa}
+\data{\DTMDisplaydate{2017}{22}{1}{-1}}
+\instituicao{CEFET-MG}
+\local{Divinópolis}
+\date{Novembro de 2017}
+
+\hypersetup{
+  unicode    = true,
+  pdftitle   = {Cerâmica e Polímeros},
+  pdfsubject = {Cerâmica e Polímeros},
+  pdfauthor  = {Álan Crístoffer e Sousa}
+}
+
+\addbibresource{bibliothek.bib}
+
+\begin{document}
+  \selectlanguage{brazil}
+  \renewcommand{\contentsname}{}
+  \renewcommand{\listfigurename}{}
+  \renewcommand{\listtablename}{}
+  \pretextual{}
+
+  \textual{}
+  \pagestyle{cefetchapter}
+  \pagenumbering{roman}
+  \input{titlepage}
+  \input{dedicatoria}
+  \input{agradecimento}
+  \input{miss_brasil}
+  \input{abstract}
+  \cleardoublepage{}
+
+  \pdfbookmark[0]{\contentsname}{toc}
+  \chapter*{Sumário}
+  \tableofcontents*{}
+  \thispagestyle{plain}
+  \cleardoublepage{}
+
+  \chapter*{Lista de figuras}
+  \listoffigures*{}
+  \thispagestyle{plain}
+  \cleardoublepage{}
+  
+  \chapter*{Lista de tabelas}
+  \listoftables*{}
+  \thispagestyle{plain}
+  \cleardoublepage{}
+  
+  \input{abbrpage}
+  \cleardoublepage{}
+
+  \pagenumbering{arabic}
+  \pagestyle{cefet}
+  \aliaspagestyle{chapter}{cefetchapter}
+
+  \input{introduction}
+  \cleardoublepage{}
+  \input{chapter2}
+  \cleardoublepage{}
+  \input{chapter3}
+  \cleardoublepage{}
+  \input{chapter4}
+  \cleardoublepage{}
+  \input{chapter5}
+  \cleardoublepage{}
+  \input{conclusion}
+  \cleardoublepage{}
+
+  \printbibliography{}
+\end{document}

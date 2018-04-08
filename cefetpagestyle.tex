@@ -1,0 +1,44 @@
+% !TeX root = document.tex
+% !TeX encoding = UTF-8 Unicode
+
+%%criar um novo estilo de cabeçalhos e rodapés
+\makepagestyle{cefet}
+  %%cabeçalhos
+  \makeevenhead{cefet} %%pagina par
+     {~}
+     {~}
+     {\rightmark}
+  \makeoddhead{cefet} %%pagina ímpar ou com oneside
+     {~}
+     {~}
+     {\rightmark}
+  \makeheadrule{cefet}{\textwidth}{\normalrulethickness} %linha
+  %% rodapé
+  \makeevenfoot{cefet}
+     {~} %%pagina par
+     {\thepage}
+     {~} 
+  \makeoddfoot{cefet} %%pagina ímpar ou com oneside
+     {~}
+     {\thepage}
+     {~}
+
+\makepagestyle{cefetchapter}
+  %%cabeçalhos
+  \makeevenhead{cefetchapter} %%pagina par
+     {~}
+     {~}
+     {~}
+  \makeoddhead{cefetchapter} %%pagina ímpar ou com oneside
+     {~}
+     {~}
+     {~}
+  %% rodapé
+  \makeevenfoot{cefetchapter}
+     {~} %%pagina par
+     {\thepage}
+     {~} 
+  \makeoddfoot{cefetchapter} %%pagina ímpar ou com oneside
+     {~}
+     {\thepage}
+     {~}
