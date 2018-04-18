@@ -1,37 +1,64 @@
 % !TeX root = document.tex
 % !TeX encoding = UTF-8 Unicode
 
-\chapter{Objetivos}%
-\label{chp:objectives}
+\chapter{Revisão da literatura}%
+\label{chp:bibliography-review}
 
-Desenvolver um controlador do tipo MPC com restrições com modelo SPD utilizando
-observadores do tipo Kalman e implementá-lo utilizando e adaptando a plataforma
-de controle desenvolvida pelo proponente para uso no forno do laboratório de
-sinais e sistemas. O objetivo pode ser assim dividido:
+A malha fechada foi formalizada matematicamente em 1868 por Maxwell. Em
+1927~\textcite{article:black} demonstrou a utilidade da realimentação negativa
+nos laboratórios da Bell onde aplicou a malha fechada com realimentação negativa
+nos amplificadores das linhas de transmissão.
 
-\begin{itemize}
-      \item modificar a eletrônica da planta: instalar circuitos
-            microprocessados com o intuito de controlar o acionamento do forno,
-            fornecendo um caminho alternativo ao acionamento que já está
-            implementado e permitindo a integração com a plataforma de controle;
-      \item modificar a plataforma de controle: desenvolver driver específico
-            para o forno, de forma a tornar o acionamento dos atuadores e a
-            leitura dos sensores mais simples e direto para os futuros usuários;
-      \item desenvolver o controlador MPC\@: utilizar o modelo SPD desenvolvido
-            pelo~\textcite{masterthesis:nelson} para desenvolver um
-            controlador MPC com restrições na entrada e saída de forma a
-            controlar a temperatura em um ponto diferente daquele onde está
-            fisicamente instalado o sensor;
-      \item implementar o controlador: utilizar a linguagem Python e a
-            plataforma de controle para implementar o controlador e executar o
-            controle da planta;
-      \item comparar o desempenho do controlador: usar índices de desempenho
-            para comparar o desempenho do controlador MPC com controladores PI a
-            serem desenvolvidos utilizando as técnicas
-            de~\textcite{article:clarke} e~\textcite{article:martins};
-      \item realizar melhorias na plataforma: ao utilizar a plataforma como
-            usuário, espera-se encontrar dificuldades, erros e novas ideias que
-            serão ser corrigidos/implementadas, como, por exemplo, recuperação
-            de mensagens de erro salvas no banco de dados e exibição para o
-            usuário e verificação de sintaxe de código digitado pelo usuário.
-\end{itemize}
+No entanto, ao ampliar o sinal, foi ampliado também o ruído. Para resolver este
+problema iniciaram-se estudos para utilizar técnicas descritas por Laplace,
+Fourier e Cauchy, que propunham o uso do domínio da frequência para modelar
+sistemas dinâmicos. O problema passou a ser filtrar as frequências desejadas de
+forma a não aplicar o ganho da malha fechada no rúido~\cite{book:bryson}.
+
+Nyquist e~\textcite{article:bode} criaram ferramentas na década de 1930 que
+permitem quantizar a estabilidade de um sistema em malha fechada. O uso de tais
+ferramentas facilitou o desenvolvimento de controladores que alteram a dinâmica
+do sistema para uma dinâmica desejada. A adição de ferramentas estocásticas
+permitiu também o desenvolvimento de filtros ótimos.
+
+Com estas técnicas estabeleceu-se o que chamamos de controle clássico. Este é
+caracterizado pelo desenvolvimento no domínio da frequência e pelo uso de
+técnicas projetadas para que seus cálculos fossem feitos à mão, ou no máximo com
+o uso de tabelas~\cite{book:dorf}.
+
+Embora o uso da análise no domínio da frequência tenha sido útil principalmente
+para sua época, começaram a aparecer sistemas mais complexos, com várias
+entradas e saídas, ordem elevada e não lineares, que não eram bem descritos no
+domínio da frequência. Nesta época, estudos no domínio do tempo, utilizando as
+equações diferenciais, começaram a aparecer, principalmente para resolver
+problemas da indústria aeroespacial~\cite{article:lyapunov}.
+
+Várias técnicas foram desenvolvidas nesta época. Uma se destaca: \ac{DMC} ---
+\textit{Dynamic Matrix Control}. Ela visa resolver os problemas de controle
+multivariável com restrições, típico nas indústrias química e petroquímica.
+Antes do desenvolvimento desta técnica o controle era feito por várias malhas em
+cascata~\cite{article:cutler}.
+
+Seu impacto na indústria foi gigante. Provavelmente não há nenhuma empresa
+extratora de petróleo que não utilize esta técnica ou uma derivada. O
+desenvolvimento inical do \ac{MPC} se deu como uma tentativa de entender o
+\ac{DMC}, que parecia desafiar a análise teórica tradicional por ser formulado
+de maneira não convencional. Por exemplo, outra técnica, a \ac{IMC} ---
+\textit{Internal Mode Control} --- falhou em explicar o funcionamento da DMC mas
+acabou ajudando no desenvolvimento do controle robusto~\cite{article:morari}.
+
+Hoje em dia o controle preditivo é formulado sempre em espaço de estados, mesmo
+que seja possível sua formulação por, por exemplo, funções de transferência.
+O controle preditivo por modelo é uma das formas de controle desenvolvidas com
+a ideia de buscar a trajetória ótima de controle, que observa-se sempre existir
+em sistemas dinâmicos. Para isso é utilizada a otimização custo, normalmente uma
+função de energia~\cite{article:morari,book:bryson}.
+
+O grande problema destes controladores hoje é o custo computacional quando se
+necessita de um controlador \textit{on-line}, o que normalmente é o que se
+deseja, pois estes retornam resultados melhores na presença de restrições. Os
+estudos atuais seguem duas linhas: melhorar os \textit{solvers} de forma a
+melhorar a performance ou encontrar maneiras de pré-processar as restrições,
+para que apenas multiplicações matriciais sejam realizadas \textit{on-line}. A
+primeira linha de pesquisa é a mais explorada hoje em
+dia~\cite{book:wang,masterthesis:zhang}.
