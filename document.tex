@@ -5,8 +5,10 @@
 \input{meta}
 \input{cefetpagestyle}
 \input{abbr}
-\selectlanguage{brazil}
 
+\selectlanguage{brazil}
+\addbibresource{bibliothek.bib}
+\pdfbookmark[0]{\contentsname}{toc}
 \hypersetup{
   unicode    = true,
   pdftitle   = {Implementação de controlador MPC em um sistema a parâmetros distribuídos via subsistemas interconectados},
@@ -14,14 +16,12 @@
   pdfauthor  = {Álan Crístoffer e Sousa}
 }
 
-\addbibresource{bibliothek.bib}
-
 \begin{document}
   \selectlanguage{brazil}
-  \renewcommand{\contentsname}{}
-  \renewcommand{\listfigurename}{}
-  \renewcommand{\listtablename}{}
   \pretextual{}
+  \renewcommand{\printtoctitle}{\chapter*}
+  \renewcommand{\printloftitle}{\chapter*}
+  \renewcommand{\printlottitle}{\chapter*}
 
   \textual{}
   \pagestyle{cefetchapter}
@@ -31,30 +31,27 @@
   % \input{agradecimento}
   % \input{miss_brasil}
   \input{abstract}
-  \cleardoublepage{}
 
-  \pdfbookmark[0]{\contentsname}{toc}
-  \chapter*{Sumário}
   \tableofcontents*{}
   \thispagestyle{plain}
   \cleardoublepage{}
 
-  \chapter*{Lista de figuras}
   \listoffigures*{}
   \thispagestyle{plain}
   \cleardoublepage{}
-  
-  \chapter*{Lista de tabelas}
+
   \listoftables*{}
   \thispagestyle{plain}
   \cleardoublepage{}
-  
+
   \input{abbrpage}
   \cleardoublepage{}
 
   \pagenumbering{arabic}
   \pagestyle{cefet}
   \aliaspagestyle{chapter}{cefetchapter}
+
+  \newtheorem{theorem}{Teorema}
 
   \input{introduction}
   \cleardoublepage{}
@@ -64,10 +61,10 @@
   \cleardoublepage{}
   \input{chapter4}
   \cleardoublepage{}
-  \input{chapter5}
-  \cleardoublepage{}
-  \input{conclusion}
-  \cleardoublepage{}
+  % \input{chapter5}
+  % \cleardoublepage{}
+  % \input{conclusion}
+  % \cleardoublepage{}
 
   \printbibliography{}
 \end{document}
