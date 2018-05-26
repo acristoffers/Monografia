@@ -2,13 +2,13 @@
 % !TeX encoding = UTF-8 Unicode
 
 \documentclass[sumario=tradicional,
-              12pt,
-              openright,
-              twoside,
-              a4paper,
-              english,
-              french,
-              brazil]{abntex2}
+	12pt,
+	openright,
+	twoside,
+	a4paper,
+	english,
+	french,
+	brazil]{abntex2}
 
 % Set font in LuaLaTeX and XeLaTeX. Does not work in PDFLaTeX
 \usepackage{fontspec}
@@ -19,12 +19,11 @@
 \usepackage[brazil]{babel}
 \usepackage[useregional]{datetime2}
 \usepackage[style=abnt]{biblatex}
-\usepackage{setspace} % Control line height
 \usepackage[decimalsymbol=comma,
-            input-complex-roots=j,
-            output-complex-root=j,
-            complex-root-position=after-number,
-            loctolang={BR:portuguese,UK:english}]{siunitx} % SI units
+	input-complex-roots=j,
+	output-complex-root=j,
+	complex-root-position=after-number,
+	loctolang={BR:portuguese,UK:english}]{siunitx} % SI units
 %\edef\pdfcreationdate {\pdffeedback creationdate} % fixes datetime import in LuaLaTeX and XeLaTeX
 \usepackage[top=3cm,bottom=2cm,left=3cm,right=2cm]{geometry}
 
@@ -33,7 +32,7 @@
 \usepackage{rotate} % To rotate images
 \usepackage[section]{placeins} % Prevents figures from floating to wrong places
 \usepackage{epsf}
-\usepackage{caption}
+\usepackage{caption}[2004/07/16]
 
 % Math related
 \usepackage{amssymb}
