@@ -4,19 +4,48 @@
 \chapter{Introdução}%
 \label{chp:introducao}
 
-\ac{MPC} é uma técnica de controle avançada que utiliza o modelo do sistema para
-prever a saída em momentos futuros e, com isso, gerar uma estratégia de
-controle. Para isso é utilizado o conceito de controle por horizonte recessivo,
-onde a o sinal de controle ótimo é planejado para os próximos \(N_c\) instantes,
-mas apenas o primeiro é utilizado, recalculando-se toda a estratégia no instante
-seguinte, de forma a possibilitar a reação à possíveis
-distúrbios~\cite{book:wang}.
+Controle preditivo por modelo (\ac{MPC} --- \textit{Model Predictive Control}) é
+uma técnica de controle avançada que utiliza o modelo do sistema para prever a
+saída em momentos futuros e, com isso, gerar uma estratégia de controle. Esta
+técnica pode ser aplicada em modelos contínuos, onde o tempo de amostragem é tão
+pequeno que pode ser desconsiderado, ou discretos, onde o modelo já espera que
+exista um certo tempo entre amostragens. A abordagem discreta será usada pois
+melhor ilustra o funcionamento do \ac{MPC}, além de fornecer ao controlador mais
+tempo para o processamento do próximo sinal de controle.
 
-Normalmente utiliza-se sistemas a parâmetros concentrados (\ac{SPC}) para modelar
-sistemas físicos. Nesses sistemas as variáveis de interesse se alteram apenas no
-domínio do tempo. Em sistemas a parâmetros distribuídos (\ac{SPD}), no entanto, a
-variável de interesse também depende do espaço. Tais sistemas são normalmente
-representados por equações diferenciais parciais~\cite{masterthesis:nelson}.
+Em um modelo discreto o sinal é amostrado a cada \( \Delta{}t \) segundos. O
+modelo não varia mais diretamente com o tempo, mas sim com o instante de
+amostragem \( k \), que se associa com o tempo através do tempo de amostragem
+como \( t = k\Delta{}t \). Assim, em um modelo discreto, ao se passar do tempo
+\( 0 \) para o tempo \( \Delta{}t \) ou do tempo \( \Delta{}t \) para o tempo
+\( 2\Delta{}t \), dizemos que se passou um instante.
+
+Utilizando um modelo discreto pode-se então prever a saída do sistema para um
+instante futuro, se as entradas que serão aplicadas ao sistema nos instantes
+anteriores forem conhecidas. Pode-se então prever as saídas dos próximos \(N_p\)
+instantes e utilizar técnicas de otimização para obtermos os próximos \(N_c\)
+sinais de controle ótimos que levarão o sistema à referência. Ao utilizar apenas
+o primeiro sinal de controle e recalcular os sinais de controle ótimos a todo
+instante, o controlador será capaz de rejeitar ruídos e reagir a mudanças, como
+a da referência. Esta técnica é chamada de Controle por Horizonte Recessivo e é
+a base do \ac{MPC}~\cite{book:wang}.
+
+A discretização foi feita no tempo, pois altera-se o modelo para que este não
+mais dependa do tempo mas sim de um instante. Sistemas que dependem apenas do
+tempo são chamados de sistemas a parâmetros concentrados (\ac{SPC}). No entanto
+existem sistemas que não variam apenas no tempo, mas também no espaço, por
+exemplo. Um exemplo é a transferência de calor em uma barra metálica, onde a
+temperatura depende tanto do tempo quanto do ponto no espaço em que se faz a
+medição. Sistemas que dependem de mais de uma variável são chamados de sistemas
+a parâmetros distribuídos (\ac{SPD}). Sua modelagem é feita utilizando derivadas
+parciais e equações diferenciais parciais (\ac{EDP})~\cite{masterthesis:nelson}.
+
+Para ambos tipos de modelos é comum usar a modelagem por espaço de estados ao se
+trabalhar com \ac{MPC}. Isso permite controlar facilmente sistemas com múltiplas
+entradas e múltiplas saídas. No entanto, ao se trabalhar com espaço de estados,
+é necessário que o valor de todos os estados sejam conhecidos, o que nem sempre
+é possível, seja por limitações do sistema ou até mesmo físicas. Para resolver
+este problema utiliza-se observadores.
 
 O observador é um sistema que estima os estados de um modelo baseado nas
 entradas e saídas do mesmo. O observador de Kalman, também conhecido como filtro
@@ -78,7 +107,7 @@ laboratório de sinais e sistemas. O objetivo pode ser assim dividido:
             controle da planta;
       \item comparar o desempenho do controlador: usar índices de desempenho
             para comparar o desempenho do controlador \ac{MPC} com controladores
-            PI a serem desenvolvidos utilizando as técnicas
+            PI ou PID a serem desenvolvidos utilizando as técnicas
             de~\textcite{article:clarke} e~\textcite{article:martins};
       \item realizar melhorias na plataforma: ao utilizar a plataforma como
             usuário, espera-se encontrar dificuldades, erros e novas ideias que
@@ -96,28 +125,29 @@ sem medir diretamente a variável controlada. Isto é interessante pois nem semp
 restrições físicas (como colocar um sensor no centro de um alto-forno?) ou por
 questões financeiras.
 
-O controlador \ac{MPC} se tornou interessante por ser uma técnica avançada de
-controle que ainda não é estudada no \textit{campus V}. Assim, além da
-possibilidade de estudar uma técnica avançada, este trabalho contribui por ser o
-primeiro trabalho a utilizar tal controlador no Grupo de Controle e Modelagem de
-Sistemas Mecatrônicos.
+A escolha do controlador \ac{MPC} se tornou interessante por ser uma técnica
+avançada de controle que ainda não é estudada no \textit{campus V}. Assim, além
+da possibilidade de estudar uma técnica avançada, este trabalho contribui por
+ser o primeiro trabalho a utilizar tal controlador no Grupo de Modelagem e
+Controle de Sistemas Mecatrônicos.
 
 \section{Estado da arte}%
 \label{sec:estado-da-arte}
 
 O uso de controladores \ac{MPC} com modelos \ac{SPD} não é novo. Sua maior
-aplicação, no entanto, continua sendo na área da química e fabricação de aço.
-Ele foi desenvolvido inicialmente para controle de processos químicos, onde o
-equipamento é caro, o processo é lento e contém várias entradas e saídas que
-devem ser restringidas arbitrariamente~\cite{article:cairano}.
+aplicação, no entanto, continua sendo na área da química, fabricação de aço e,
+principalmente na indústria petroquímica. Ele foi desenvolvido inicialmente para
+controle de processos químicos, onde o equipamento é caro, o processo é lento e
+contém várias entradas, saídas e estados que devem ser restringidas em amplitude
+e taxa de variação~\cite{article:cairano}.
 
 Este cenário está mudando e outras indústrias --- com modelos com poucas
 entradas e saídas, custo mais baixo e dinâmica mais rápida --- estão adotodando
-os controladores \ac{MPC}\@. No entanto isso apresenta alguns desafios no
+os controladores \ac{MPC}\@. No entanto, isso apresenta alguns desafios no
 desenvolvimento de controladores, pois o \textit{framework} \ac{MPC} não foi
 desenvolvido para tais sistemas e possui limitações como, por exemplo, o alto
 custo computacional. Trabalhos já estão sendo desenvolvidos para minimizar ou
-sanir tais problemas.
+sanir tais problemas~\cite{article:cairano}.
 
 Em ambientes industriais é comum o uso de computadores lógicos programáveis para
 fazer a interface com o hardware. No meio acadêmico, no entanto, utiliza-se

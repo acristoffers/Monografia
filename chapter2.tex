@@ -44,8 +44,9 @@ extratora de petróleo que não utilize esta técnica ou uma derivada. O
 desenvolvimento inical do \ac{MPC} se deu como uma tentativa de entender o
 \ac{DMC}, que parecia desafiar a análise teórica tradicional por ser formulado
 de maneira não convencional. Por exemplo, outra técnica, a \ac{IMC} ---
-\textit{Internal Mode Control} --- falhou em explicar o funcionamento da DMC mas
-acabou ajudando no desenvolvimento do controle robusto~\cite{article:morari}.
+\textit{Internal Model Control} --- falhou em explicar o funcionamento da DMC
+mas acabou ajudando no desenvolvimento do controle
+robusto~\cite{article:morari}.
 
 Hoje em dia o controle preditivo é formulado sempre em espaço de estados, mesmo
 que seja possível sua formulação por, por exemplo, funções de transferência.
@@ -58,7 +59,7 @@ O grande problema destes controladores hoje é o custo computacional quando se
 necessita de um controlador \textit{on-line}, o que normalmente é o que se
 deseja, pois estes retornam resultados melhores na presença de restrições. Os
 estudos atuais seguem duas linhas: melhorar os \textit{solvers} de forma a
-melhorar a performance ou encontrar maneiras de pré-processar as restrições,
-para que apenas multiplicações matriciais sejam realizadas \textit{on-line}. A
-primeira linha de pesquisa é a mais explorada hoje em
+melhorar o desempenho ou encontrar maneiras de pré-processar as restrições, para
+que apenas multiplicações matriciais sejam realizadas em tempo real. A primeira
+linha de pesquisa é a mais explorada hoje em
 dia~\cite{book:wang,masterthesis:zhang}.
