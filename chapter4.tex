@@ -350,7 +350,7 @@ que pode ser reescrita como
 	\begin{bmatrix}
 		-C_1u(k-1) - C_2\Delta{}U \\
 		C_1u(k-1) + C_2\Delta{}U  \\
-	\end{bmatrix} \Delta{}U \le
+	\end{bmatrix} \le
 	\begin{bmatrix}
 		-U^{\min} \\
 		U^{\max}
@@ -379,8 +379,8 @@ sendo
 	\begin{split}
 		M_1 =
 		\begin{bmatrix}
-			-C1 \\
-			C2
+			-C_2 \\
+			C_2
 		\end{bmatrix};
 		N_1 =
 		\begin{bmatrix}
@@ -453,9 +453,9 @@ equação~\eqref{eq:cost-function-qp} e \( \Phi \), \( F \), \( R_s \) e \(\bar{
 
 Explicar o funcionamento do método de programação quadrática foge do escopo
 deste trabalho. Existem bibliotecas que implementam este método em MATLAB e
-Python como, por exemplo, a CVXOPT\@. Para usar o \textit{solver} de programação
-quadrática definido nessas bibliotecas deve-se definir as matrizes \( E \), \( F
-\), \( M \) e \( \gamma \).
+Python como, por exemplo, a CVXOPT\footnote{https://cvxopt.org/}. Para usar o
+\textit{solver} de programação quadrática definido nessas bibliotecas deve-se
+definir as matrizes \( E \), \( F \), \( M \) e \( \gamma \).
 
 Analisando a equação~\eqref{eq:generic-restriction-matrix} pode-se ver que suas
 dimensões não são iguais, isto é, a matriz \( M \) não é quadrada. Isso ocorre
@@ -645,7 +645,7 @@ qualquer momento.
             \draw[->] (-1.5,-2) -- node[above] {$u(0,t)$} ++ (sl);
             \draw[->] (sl) -- node[above] {$y(s_l,t)$} ++ (sl2);
             \node[text width=5pt,text height=5pt] at (10,-2) (sl2e) {};
-            \draw[->] (sl2) -- node[above] {$y(s_l,t)$} ++ (sl2e);
+            \draw[->] (sl2) -- node[above] {$y(L,t)$} ++ (sl2e);
 	\end{tikzpicture}
 	\caption{Subsistemas LPV interconectados}%
 	\label{fig:nelson-system}
@@ -832,15 +832,15 @@ observador de Kalman.
 
 \begin{theorem}%
 	\label{theorem:kalman}
-	Para qualquer sequência de entrada regularmente persistente e limitada que
-	resulte em \( A \), \( B \) e \( C \), o seguinte sistema:
+	Para qualquer sequência de entrada regularmente persistente para o par \(
+	(A, C) \) o seguinte sistema:
 
 	\begin{equation}
 		\label{eq:kalman-definition}
 		\begin{split}
 			P(\infty)=A(P(\infty)-P(\infty)C^T{(\Gamma+CP(\infty)C^T)}^{-1}CP(\infty))A^T+\Theta \\
 			K_{ob}(\infty)=AP(\infty)C^T{(\Gamma+CP(\infty)C^T)}^{-1} \\
-			\hat{x}(k+1) = A\hat{x}(k) + Bu(k) + K_{ob}(\infty)(y(k) - C\hat{x}(k))
+			\hat{x}(k+1) = A\hat{x}(k) + Bu(k) + K_{ob}(\infty)(y(k) - C\hat{x}(k))-Du(k)
 		\end{split}
 	\end{equation}
 
@@ -874,16 +874,16 @@ observador do tipo Kalman. Isso pode ser visto em sua estrutura. Sua formulaçã
 \begin{theorem}%
 	\label{theorem:exponential-observer}
 	Dado os sistema~\eqref{eq:observer-noisy-model}, e assumindo que uma
-	sequência de entrada, \( u(k) \),  é regularmente persistente e torna A
-	inversível, então, um observador globalmente exponencialmente convergente é
-	dado por:
+	sequência de entrada, \( u(k) \),  é regularmente persistente para o par \(
+	(A,C) \) e torna A invertível, então, um observador globalmente
+	exponencialmente convergente é dado por:
 
 	\begin{equation}
 		\label{eq:exponential-observer-definition}
 		\begin{split}
 			P(\infty)=\delta^{-1}A(P(\infty)-KCP(\infty))A^T \\
 			K_{ob}(\infty)=AP(\infty)C^T{(\Gamma+CP(\infty)C^T)}^{-1} \\
-			\hat{x}(k+1) = A\hat{x}(k) + Bu(k) + K_{ob}(\infty)(y(k) - C\hat{x}(k)).
+			\hat{x}(k+1) = A\hat{x}(k) + Bu(k) + K_{ob}(\infty)(y(k) - C\hat{x}(k))-Du(k).
 		\end{split}
 	\end{equation}
 \end{theorem}

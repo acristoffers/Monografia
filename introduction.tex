@@ -74,20 +74,14 @@ observador e a leitura do sensor \(S_5\) para estimar a temperatura no sensor
     \label{fig:sensors-SPD}
 \end{figure}
 
-Propõe-se o desenvolvimento de controladores \ac{MPC} que utilizem os modelos
-\ac{SPD} gerados pelo~\textcite{masterthesis:nelson} para controlar o processo
-do forno conforme descrito acima. Além disso, os mesmos devem ser implementados
-de forma a serem executados na plataforma desenvolvida pelo autor em sua
-iniciação científica, utilizando esta oportunidade para corrigir problemas
-encontrados e dar continuidade ao desenvolvimento da mesma.
-
 \section{Objetivos}%
 \label{sec:objectives}
 
-Desenvolver um controlador do tipo \ac{MPC} com restrições com modelo \ac{SPD}
-utilizando observadores do tipo Kalman e implementá-lo utilizando e adaptando a
-plataforma de controle desenvolvida pelo proponente para uso no forno do
-laboratório de sinais e sistemas. O objetivo pode ser assim dividido:
+O objetivo desse trabalho é desenvolver um controlador do tipo \ac{MPC} com
+restrições com modelo \ac{SPD} utilizando observadores do tipo Kalman e
+implementá-lo utilizando e adaptando a plataforma de controle desenvolvida pelo
+proponente para uso no forno do laboratório de sinais e sistemas. O objetivo
+pode ser assim dividido:
 
 \begin{itemize}
       \item modificar a eletrônica da planta: instalar circuitos
@@ -122,8 +116,8 @@ laboratório de sinais e sistemas. O objetivo pode ser assim dividido:
 A principal motivação para o trabalho é poder fazer o controle de um processo
 sem medir diretamente a variável controlada. Isto é interessante pois nem sempre
 é possível medir diretamente a grandeza que se deseja controlar, seja por
-restrições físicas (como colocar um sensor no centro de um alto-forno?) ou por
-questões financeiras.
+restrições físicas (como, por exemplo, colocar um sensor no centro de um
+alto-forno) ou por questões financeiras.
 
 A escolha do controlador \ac{MPC} se tornou interessante por ser uma técnica
 avançada de controle que ainda não é estudada no \textit{campus V}. Assim, além

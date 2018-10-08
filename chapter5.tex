@@ -117,18 +117,19 @@ software \textit{moirai} e já foram publicadas.
 
 O funcionamento do circuito eletrônico foi feito primeiramente acionando o
 sistema desenvolvido por~\textcite{masterthesis:nelson}. Após verificar que este
-era capaz de acionar as resistências e ler valores de todos os sensores foi
-feita a modificação dos códigos dos microcontroladores e testou-se novamente com
-o novo código. Verificou-se a necessidade de recalibrar os sensores e
-reordená-los, identificando qual estava conectado a qual porta. Devido a forma
-como se dá o acionamento não é necessária a calibração dos atuadores.
+era capaz de acionar as resistências e ler valores de todos os sensores, foi
+feita a modificação dos códigos dos microcontroladores para permitir a
+comunicação com a plataforma e testou-se novamente com o novo código.
+Verificou-se a necessidade de recalibrar os sensores e reordená-los,
+identificando qual estava conectado a qual porta. Devido a forma como se dá o
+acionamento não é necessária a calibração dos atuadores.
 
-Para a calibração dos sensores foi utilizada uma garrafa térmica perfurada e um
-ferro de solda. O mesmo foi ligado e foram feitas medições das temperaturas dos
-sensores bem como de um termômetro industrial a cada 10 segundos. Foram
-coletados 160 pontos. Utilizou-se então a técnica do mínimos quadrados para
-encontrar uma expressão de correção linear, \( ax+b \), cujos coeficientes podem
-ser vistos na Tabela~\ref{tbl:calib-coefs}.
+Para a calibração dos sensores foi utilizada uma garrafa térmica perfurada e uma
+lâmpada incandescente. A mesma foi ligada e foram feitas medições das
+temperaturas dos sensores bem como de um termômetro industrial a cada 10
+segundos. Foram coletados 160 pontos. Utilizou-se então a técnica do mínimos
+quadrados para encontrar uma expressão de correção linear, \( ax+b \), cujos
+coeficientes podem ser vistos na Tabela~\ref{tbl:calib-coefs}.
 
 \begin{table}[ht!]
     \centering
@@ -162,12 +163,61 @@ nos \textit{commits} de cada projeto, publicados desde 1º de março de 2018:
 As modificações que se destacam são:
 
 \begin{itemize}
-    \item implementação de um mecanismo de \textit{backup} de todo o banco,
-    \item implementação de imporatação e exportação de configuração de hardware,
-    \item seleção das variáveis a serem exibidas em gráficos,
-    \item opção de clonar um teste ou controlador,
-    \item melhoria da forma de apresentação de erros no terminal,
-    \item melhoria de velocidade na recuperação de dados do banco,
+    \item implementação de um mecanismo de \textit{backup} de todo o banco: o
+          uso de múltiplos computadores na mesma planta pode ser facilitado com
+          a opção de realizar backup de todo o banco. Isso também permite a
+          liberação de espaço no sistema sem a perda de dados, já que pode-se
+          guardar os dados antigos e apagar os testes, deixando a interface mais
+          limpa;
+    \item implementação de imporatação e exportação de configuração de hardware:
+          também interessante quando várias pessoas utilizam o mesmo hardware.
+          Mudanças, como novas calibrações, podem ser compartilhadas de forma
+          simples e novos usuários podem começar a utilizar a planta
+          rapidamente, apenas importando uma configuração já testada;
+    \item seleção das variáveis a serem exibidas em gráficos: durante o
+          desenvolvimento inicial não se pensou na possibilidade do usuário
+          precisar salvar dezenas ou centenas de variáveis. Toda variável salva
+          geraria um gráfico para o usuário, sempre. Durante os testes com casos
+          reais, realizados por alunos de graduação e mestrado, observou-se a
+          necessidade de limitar o número de gráficos gerados sem limitar o
+          número de variáveis salvas. Isso foi feito colocando uma opção de
+          selecionar quais gráficos serão exibidos;
+    \item opção de clonar um teste ou controlador: durante os testes também
+          percebeu-se a necessidade de duplicar um teste inteiro para modificar
+          apenas um valor de variável, ou outra modificação pequena;
+    \item melhoria da forma de apresentação de erros no terminal: os erros
+          apresentados no terminal não eram explicativos, não mostrando, por
+          exemplo, onde ocorreu o erro. Agora os erros trazem o escopo e a linha
+          do erro, bem como a mensagem principal (erro mais relevante). Esse
+          erro, na versão 1.0.11 do Lachesis, também é exibido para o usuário na
+          interface, no componente Gráficos;
+    \item melhoria de velocidade na recuperação de dados do banco: foram
+          utilizadas funções disponíveis em versões mais recentes do MongoDB
+          para melhorar a filtragem e transformação dos dados retornados. Esses
+          eram feitos anteriormente em Python, com uma implementação mais lenta
+          que aquela do banco de dados;
     \item inserção de um novo banco de dados: MySQL (necessário no Raspberry),
-    \item implementação de busca por drivers (ahio) em caminhos arbitrários.
+          sua necessidade veio da modificação anterior. Ao atualizar o banco de
+          dados percebeu-se que as versões mais novas não mais suportam sistemas
+          operacionais de 32bits, por isso foi necessário encontrar um banco de
+          dados capaz de executar em um Raspberry Pi de 32bits. A seleção do
+          MySQL se deu pela sua disponibilidade e atualização no Raspbian,
+          sistema operacional do Raspberry e por sua implementação em linguagem
+          C/C++. Outros bancos de dados não estruturados do tipo
+          \textit{document store} foram considerados, mas a falta de
+          documentação, api pobre e/ou implementação em linguagem interpretada
+          (mesmo que por máquina virtual) os fizeram menos interessantes;
+    \item implementação de busca por drivers (ahio) em caminhos arbitrários: a
+          biblioteca ahio implementa alguns drivers padrão que estão presentes
+          em seu código fonte. No entanto, faz-se necessário a implementação de
+          drivers específicos, que não devem ser inseridos e distribuídos na
+          biblioteca por não serem úteis em outros contextos, por exemplo, o
+          driver do forno e os drivers utilizados pelos alunos Affonso Salomão e
+          Bernardo Amin em seus TCCs. Para solucionar esse problema criou-se a
+          possibilidade de procurar por drivers em caminhos informados pelo
+          usuário, exportando-se funções para adicionar e remover caminhos do
+          \textit{PATH}. No aplicativo \textit{moirai} foi criada a opção de se
+          definir uma variável de ambiente denominada \textit{AHIO\_PATH}
+          contendo caminhos separados por \enquote{:} (dois pontos), conforme
+          padrão \textit{POSIX}.
 \end{itemize}
