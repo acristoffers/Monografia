@@ -19,9 +19,9 @@ controle~\cite{book:wang}.
 \subsection{Princípio de funcionamento}%
 \label{subsec:mpc-basic}
 
-A formualção \ac{MPC} mais comum é a em espaço de estados. Um modelo em espaço
+A formulação \ac{MPC} mais comum é a em espaço de estados. Um modelo em espaço
 de estados tem a forma
-
+%
 \begin{equation}
 	\label{eq:ss}
 	\begin{split}
@@ -29,8 +29,8 @@ de estados tem a forma
 		y(t) = C x(t) + Du(t),
 	\end{split}
 \end{equation}
-
-onde \( A \in R^{n \times n} \) é a matriz dinâmica do sistema, \( B in R^{n
+%
+em que \( A \in R^{n \times n} \) é a matriz dinâmica do sistema, \( B in R^{n
 \times m} \) e a matriz de entrada, \( C \in R^{m \times n} \) é a matriz de
 saída. \( D \in R^{m \times m} \) é normalente \( 0 \). \( x(t) \in R^{m \times
 1} \) é o vetor de estados e \( u(t) \in R^{m \times 1} \) são as entradas do
@@ -44,15 +44,15 @@ Ao discretizar um sistema altera-se sua formulação para que a matriz de dinâm
 do sistema não mais produza a variação do estado, mas sim o valor do estado após
 \( \Delta{}t \) segundos. Um intervalo de tempo de \( \Delta{}t \) segundos é
 chamado de instante, sendo \( t = k\Delta{}t \). Para discretizar um modelo em
-espaço de estados usa-se a equação~\eqref{eq:discretize-ss}.
+espaço de estados usa-se a equação
 
 \begin{equation}
 	\label{eq:discretize-ss}
-	x(k+1) = e^{AT} x(k) + \int^T_0{e^{At}dt}B u(k)
+	x(k+1) = e^{AT} x(k) + \int^T_0{e^{At}dt}B u(k).
 \end{equation}
 
 Ao discretizar o modelo~\eqref{eq:ss} utilizando~\eqref{eq:discretize-ss}
-obtem-se~\eqref{eq:discrete-ss}.
+obtem-se
 
 \begin{equation}
 	\label{eq:discrete-ss}
@@ -64,7 +64,7 @@ obtem-se~\eqref{eq:discrete-ss}.
 
 Uma vez obtido o modelo discreto o mesmo deve ser aumentado com um integrador.
 Para inserir um integrador no sistema utiliza-se a
-equação~\eqref{eq:augment-matrix}.
+equação
 
 \begin{equation}
 	\label{eq:augment-matrix}
@@ -84,16 +84,16 @@ equação~\eqref{eq:augment-matrix}.
 		B \\
 		C\cdot{}B
 	\end{bmatrix}
-	\Delta u(k)
+	\Delta u(k).
 \end{equation}
 
-Observe que os estados e o sinal de entrada foram substituídos pro variações dos
+Observe que os estados e o sinal de entrada foram substituídos por variações dos
 mesmos. Isso é possível pois
-
+%
 \begin{equation}
 	\Delta x(k+1) = A \Delta x(k) + B \Delta u(k),
 \end{equation}
-
+%
 e é também necessário para o funcionamento do controlador. O motivo para esta
 reformulação será percebido mais adiante.
 
@@ -127,14 +127,14 @@ Com uma nova subsituição obtém-se a saída após 3 instantes:
 Tem-se então que a saída depende do estado atual e da trajetória de controle.
 Reescrendo estas equações de forma matricial para qualquer número \( N_p \) de
 saídas futuras e \( N_c\) de entradas futuras, tem-se
-
+%
 \begin{equation}
 	\label{eq:Y}
 	Y = F x(k) + \Phi U
 \end{equation}
-
-onde
-
+%
+em que
+%
 \begin{equation}
 	\begin{split}
 		Y=
@@ -196,15 +196,16 @@ de função é chamada de função de custo e normalmente utiliza-se em \ac{MPC}
 função quadrática, o que garante a convergência. Escrevendo a função com o
 intuito de minimizar o erro em regime permanente e a variação do sinal de
 controle, tem-se
-
+%
 \begin{equation}
 	\label{eq:cost-function}
 	J = {(R_s - Y)}^T(R_s-Y) + \Delta{}U^T\bar{R}\Delta{}U,
 \end{equation}
-
-onde \( R_s \) é o vetor referência com a mesma dimensão do vetor \( Y \) e
+%
+em que \( R_s \) é o vetor referência com a mesma dimensão do vetor \( Y \) e
 \(\bar{R} \) é uma variável que pode ser usada para controlar o peso da variação
 do sinal de controle. \( \bar{R} \) maior implica em variações menores.
+
 Substituindo~\eqref{eq:Y} em~\eqref{eq:cost-function} tem-se
 
 \begin{equation}
@@ -246,19 +247,19 @@ de restrições no equacionamento.
 Os parâmetros mais comumente restringidos são a saída do sistema, o sinal de
 controle e a variação do sinal de controle. Estas restrições tem a forma de
 inequações e podem ser escritas como
-
+%
 \begin{equation}
 	\label{eq:generic-restriction-u}
 	U^{\min} \le U \le U^{\max},
 \end{equation}
-
+%
 \begin{equation}
 	\label{eq:generic-restriction-y}
 	Y^{\min} \le Y \le Y^{\max},
 \end{equation}
-
+%
 e
-
+%
 \begin{equation}
 	\label{eq:generic-restriction-du}
 	\Delta{}U^{\min} \le \Delta{}U \le \Delta{}U^{\max}.
@@ -313,7 +314,7 @@ de forma matricial:
 
 Para a restrição de \( U \), lembrando que \( u(k) = u(k-1) + \Delta{}u(k) \),
 tem-se
-
+%
 \begin{equation}
 	\label{eq:generic-restriction-u-matrix-eq}
 	\begin{bmatrix}
@@ -342,9 +343,9 @@ tem-se
 		\Delta{}u(k+N_c-1) \\
 	\end{bmatrix},
 \end{equation}
-
+%
 que pode ser reescrita como
-
+%
 \begin{equation}
 	\label{eq:generic-restriction-u-matrix-form}
 	\begin{bmatrix}
@@ -358,7 +359,7 @@ que pode ser reescrita como
 \end{equation}
 
 Reduzindo estas restrições em uma única inequação matricial, obtem-se
-
+%
 \begin{equation}
 	\label{eq:generic-restriction-matrix}
 	\begin{bmatrix}
@@ -372,9 +373,9 @@ Reduzindo estas restrições em uma única inequação matricial, obtem-se
 		N_3
 	\end{bmatrix},
 \end{equation}
-
+%
 sendo
-
+%
 \begin{equation*}
 	\begin{split}
 		M_1 =
@@ -425,20 +426,21 @@ método de otimização e ajustar a função de custo à aquela necessária para
 método. Como a função de custo é quadrática, convém escolher um método que seja
 capaz de otimizar problemas quadráticos.
 
-O método de programação quadrática tem uma função de custo que se assemelha à
-que foi definida, como pode ser visto na equação~\eqref{eq:cost-function-qp}.
-Vale notar que as variáveis e constantes desta função não tem relação com as
-variáveis definidas anteriormente, mas são as comumente utilizadas por
-matemáticos ao trabalhar com estes métodos.
-
+O método de programação quadrática tem uma função de custo, dada por
+%
 \begin{equation}
 	\label{eq:cost-function-qp}
-	J = \frac{1}{2} x^T Ex + x^T F.
+	J = \frac{1}{2} x^T Ex + x^T F,
 \end{equation}
+%
+que se assemelha à que foi definida, como pode ser visto na
+equação~\eqref{eq:cost-function-qp}. Vale notar que as variáveis e constantes
+desta função não tem relação com as variáveis definidas anteriormente, mas são
+as comumente utilizadas por matemáticos ao trabalhar com estes métodos.
 
 Reescrevendo~\eqref{eq:cost-function} no formato de~\eqref{eq:cost-function-qp},
 encontra-se
-
+%
 \begin{equation}
 	\label{eq:cost-function-qp-constants}
 	\begin{split}
@@ -446,7 +448,7 @@ encontra-se
 		F = \Phi^T (Fx - R_s),
 	\end{split}
 \end{equation}
-
+%
 no qual \( E \) e \( F \) à esquerda da igualdade vem da
 equação~\eqref{eq:cost-function-qp} e \( \Phi \), \( F \), \( R_s \) e \(\bar{R}
 \) à direita da igualdade da formulação do \ac{MPC}.
@@ -543,7 +545,7 @@ até determinado ponto espacial que é definido como uma variável, chamada de
 \textit{scheduling}. Assim, alterando esta variável obtém-se como saída o estado
 em um ponto diferente no espaço.
 
-A figura~\ref{fig:lpv-system} contém o esquemático de um modelo \ac{LPV}. Nele o
+A Figura~\ref{fig:lpv-system} contém o esquemático de um modelo \ac{LPV}. Nele o
 mesmo sistema é descrito por apenas um modelo que tem um parâmetro que altera o
 ponto no espaço ao qual a saída se refere. Assim pode-se obter o estado em
 vários pontos no espaço sem a necessidade de remodelar o sistema.
@@ -606,7 +608,7 @@ dois modelos \ac{LPV} complementares como subsistemas interconectados. O
 primeiro modelo descreve a dinâmica do sistema do atuador até um ponto \( x \)
 enquanto o segundo modelo descreve a dinâmica desse ponto até uma saída fixa.
 
-Um esquemático desta técnica é apresentado na figura~\ref{fig:nelson-system}.
+Um esquemático desta técnica é apresentado na Figura~\ref{fig:nelson-system}.
 Nele pode-se ver que foi utilizado a técnica de subsistemas interconectados, no
 entanto, os subsistemas utilizados são \ac{LPV} e complementares. Isso significa
 que ao alterar o valor da variável \( s_l \) altera-se ambos sistemas para que o
@@ -664,7 +666,7 @@ autoregressivo de média variável com entradas exógenas, do inglês
 \textit{Autoregressive–moving-average with exogenous inputs}), um de \( 0 \) até
 \( s_\ell \) e outro de \( s_\ell \) até \( L \). A formulação geral para estes
 modelos é
-
+%
 \begin{equation}
 	\label{eq:lpv-polynom-generic-sl}
 	\begin{split}
@@ -673,9 +675,9 @@ modelos é
 					+\sum_{i_v=1}^{n_v}c_{i_v}(s_\ell)v(s_\ell,k-i_v)+v(s_\ell,k)
 	\end{split}
 \end{equation}
-
+%
 e
-
+%
 \begin{equation}
 	\label{eq:lpv-polynom-generic-L}
 	\begin{split}
@@ -686,7 +688,7 @@ e
 \end{equation}
 
 Após um dimencionamento inicial obtém-se
-
+%
 \begin{equation}
 	\label{eq:lpv-polynom-sl}
 	\begin{split}
@@ -695,9 +697,9 @@ Após um dimencionamento inicial obtém-se
 					+ v(s_\ell,k)
 	\end{split}
 \end{equation}
-
+%
 e
-
+%
 \begin{equation}
 	\label{eq:lpv-polynom-L}
 	\begin{split}
@@ -709,9 +711,9 @@ e
 					+ v(\bar{s_\ell},k),
 	\end{split}
 \end{equation}
-
+%
 sendo os coeficientes na forma
-
+%
 \begin{equation}
 	\label{eq:lpv-coeffs-form}
 	\begin{split}
@@ -798,7 +800,7 @@ tempo de amostragem de 5 segundos.
 \section{Observadores}%
 \label{sec:observers}
 
-Observadore são modelos que reconstroem informação em tempo real. Sua função é
+Observadores são modelos que reconstroem informação em tempo real. Sua função é
 recuperar as informações dos estados a partir do modelo do sistema, a entrada, a
 saída e o último estado estimado. Eles funcionam como malha fechada, utilizando
 o modelo para predizer o próximo estado e um ganho para corrigir o erro da saída
@@ -849,13 +851,13 @@ observador de Kalman.
 
 Na equação~\eqref{eq:kalman-definition}, \( \Gamma \) e \( \Theta \) são as
 matrizes de covariança da saída e da variação dos estados, respectivamente. O
-primeiro pode ser facilmente medido. Basta realizar uma leitura fix com o sensor
-por várias amostras e calcular a covariança do vetor de valores resultantes. O
-segundo exige que seja possível medir todos os estados, o que nem sempre
-acontece. Sendo possível, mede-se todos os estados em um valor fixo por várias
-amostras e calcula-se a covariança da diferença dos estados (\( x(k) - x(k-1) \)
-para cada estado). Caso não seja possível deve-se procurar formas de estimar a
-covariança ou encontrar valores manualmente que produzam resultados
+primeiro pode ser facilmente medido. Basta realizar uma leitura fixa com o
+sensor por várias amostras e calcular a covariança do vetor de valores
+resultantes. O segundo exige que seja possível medir todos os estados, o que nem
+sempre acontece. Sendo possível, mede-se todos os estados em um valor fixo por
+várias amostras e calcula-se a covariança da diferença dos estados (\( x(k) -
+x(k-1) \) para cada estado). Caso não seja possível deve-se procurar formas de
+estimar a covariança ou encontrar valores manualmente que produzam resultados
 satisfatórios.
 
 \( P(\infty) \) e \( K_{ob}(\infty) \) são os valores \( P \) e \( K_{ob} \) que

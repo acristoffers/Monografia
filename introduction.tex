@@ -7,11 +7,10 @@
 Controle preditivo por modelo (\ac{MPC} --- \textit{Model Predictive Control}) é
 uma técnica de controle avançada que utiliza o modelo do sistema para prever a
 saída em momentos futuros e, com isso, gerar uma estratégia de controle. Esta
-técnica pode ser aplicada em modelos contínuos, onde o tempo de amostragem é tão
-pequeno que pode ser desconsiderado, ou discretos, onde o modelo já espera que
-exista um certo tempo entre amostragens. A abordagem discreta será usada pois
-melhor ilustra o funcionamento do \ac{MPC}, além de fornecer ao controlador mais
-tempo para o processamento do próximo sinal de controle.
+técnica pode ser aplicada em modelos contínuos quanto discretos. A abordagem
+discreta será usada pois melhor ilustra o funcionamento do \ac{MPC}, além de
+fornecer ao controlador mais tempo para o processamento do próximo sinal de
+controle.
 
 Em um modelo discreto o sinal é amostrado a cada \( \Delta{}t \) segundos. O
 modelo não varia mais diretamente com o tempo, mas sim com o instante de
@@ -34,7 +33,7 @@ A discretização foi feita no tempo, pois altera-se o modelo para que este não
 mais dependa do tempo mas sim de um instante. Sistemas que dependem apenas do
 tempo são chamados de sistemas a parâmetros concentrados (\ac{SPC}). No entanto
 existem sistemas que não variam apenas no tempo, mas também no espaço, por
-exemplo. Um exemplo é a transferência de calor em uma barra metálica, onde a
+exemplo. Um exemplo é a transferência de calor em uma barra metálica, em que a
 temperatura depende tanto do tempo quanto do ponto no espaço em que se faz a
 medição. Sistemas que dependem de mais de uma variável são chamados de sistemas
 a parâmetros distribuídos (\ac{SPD}). Sua modelagem é feita utilizando derivadas
@@ -92,7 +91,7 @@ pode ser assim dividido:
             para o forno, de forma a tornar o acionamento dos atuadores e a
             leitura dos sensores mais simples e direto para os futuros usuários;
       \item desenvolver o controlador \ac{MPC}\@: utilizar o modelo \ac{SPD}
-            desenvolvido pelo~\textcite{masterthesis:nelson} para desenvolver um
+            desenvolvido por~\textcite{masterthesis:nelson} para desenvolver um
             controlador \ac{MPC} com restrições na entrada e saída de forma a
             controlar a temperatura em um ponto diferente daquele onde está
             fisicamente instalado o sensor;
@@ -105,9 +104,9 @@ pode ser assim dividido:
             de~\textcite{article:clarke} e~\textcite{article:martins};
       \item realizar melhorias na plataforma: ao utilizar a plataforma como
             usuário, espera-se encontrar dificuldades, erros e novas ideias que
-            serão ser corrigidos/implementadas, como, por exemplo, recuperação
-            de mensagens de erro salvas no banco de dados e exibição para o
-            usuário e verificação de sintaxe de código digitado pelo usuário.
+            serão corrigidos/implementadas, como, por exemplo, recuperação de
+            mensagens de erro salvas no banco de dados e exibição para o usuário
+            e verificação de sintaxe de código digitado pelo usuário.
 \end{itemize}
 
 \section{Motivação}%
@@ -131,9 +130,9 @@ Controle de Sistemas Mecatrônicos.
 O uso de controladores \ac{MPC} com modelos \ac{SPD} não é novo. Sua maior
 aplicação, no entanto, continua sendo na área da química, fabricação de aço e,
 principalmente na indústria petroquímica. Ele foi desenvolvido inicialmente para
-controle de processos químicos, onde o equipamento é caro, o processo é lento e
-contém várias entradas, saídas e estados que devem ser restringidas em amplitude
-e taxa de variação~\cite{article:cairano}.
+controle de processos químicos em que o equipamento é caro, o processo é lento
+e contém várias entradas, saídas e estados que devem ser restringidas em
+amplitude e taxa de variação~\cite{article:cairano}.
 
 Este cenário está mudando e outras indústrias --- com modelos com poucas
 entradas e saídas, custo mais baixo e dinâmica mais rápida --- estão adotodando
@@ -141,7 +140,7 @@ os controladores \ac{MPC}\@. No entanto, isso apresenta alguns desafios no
 desenvolvimento de controladores, pois o \textit{framework} \ac{MPC} não foi
 desenvolvido para tais sistemas e possui limitações como, por exemplo, o alto
 custo computacional. Trabalhos já estão sendo desenvolvidos para minimizar ou
-sanir tais problemas~\cite{article:cairano}.
+sanar tais problemas~\cite{article:cairano}.
 
 Em ambientes industriais é comum o uso de computadores lógicos programáveis para
 fazer a interface com o hardware. No meio acadêmico, no entanto, utiliza-se
