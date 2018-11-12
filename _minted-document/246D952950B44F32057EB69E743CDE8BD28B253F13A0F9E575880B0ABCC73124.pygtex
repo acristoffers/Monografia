@@ -1,0 +1,27 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{def} \PYG{n+nf}{lagd}\PYG{p}{(}\PYG{n}{a}\PYG{p}{,} \PYG{n}{N}\PYG{p}{):}
+    \PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{} Retorna as matrizes A1 e L0 usadas no cálculo dos coeficientes \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+    \PYG{n}{toeplitz} \PYG{o}{=} \PYG{n}{sp}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{toeplitz}
+    \PYG{n}{beta} \PYG{o}{=} \PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{n}{a} \PYG{o}{*} \PYG{n}{a}
+    \PYG{n}{A1} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{tril}\PYG{p}{(}\PYG{n}{toeplitz}\PYG{p}{([}\PYG{n}{a}\PYG{p}{]} \PYG{o}{+} \PYG{p}{[(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{**}\PYG{n}{i} \PYG{o}{*} \PYG{n}{a}\PYG{o}{**}\PYG{n}{i} \PYG{o}{*} \PYG{n}{beta} \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{N} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{)]))}
+    \PYG{n}{L0} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sqrt}\PYG{p}{(}\PYG{n}{beta}\PYG{p}{)} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{([(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{o}{**}\PYG{n}{i} \PYG{o}{*} \PYG{n}{a}\PYG{o}{**}\PYG{n}{i} \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{N}\PYG{p}{)])}
+    \PYG{k}{return} \PYG{n}{A1}\PYG{p}{,} \PYG{n}{L0}\PYG{o}{.}\PYG{n}{reshape}\PYG{p}{(}\PYG{n}{N}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}
+
+\PYG{k}{def} \PYG{n+nf}{lagfit}\PYG{p}{(}\PYG{n}{sys}\PYG{p}{,} \PYG{n}{a}\PYG{p}{,} \PYG{n}{N}\PYG{p}{,} \PYG{n}{N\PYGZus{}sim}\PYG{p}{):}
+    \PYG{l+s+sd}{\PYGZsq{}\PYGZsq{}\PYGZsq{}}
+\PYG{l+s+sd}{    Retorna os coeficientes e matriz L para esta simulação}
+
+\PYG{l+s+sd}{    sys = sistema (ver help(sp.signal.dimpulse))}
+\PYG{l+s+sd}{    a = peso ajustável}
+\PYG{l+s+sd}{    N = número de variáveis para descrever o sistema}
+\PYG{l+s+sd}{    N\PYGZus{}sim = número de pontos na simulação}
+\PYG{l+s+sd}{    \PYGZsq{}\PYGZsq{}\PYGZsq{}}
+    \PYG{n}{ts}\PYG{p}{,} \PYG{p}{(}\PYG{n}{ys}\PYG{p}{,} \PYG{p}{)} \PYG{o}{=} \PYG{n}{sp}\PYG{o}{.}\PYG{n}{signal}\PYG{o}{.}\PYG{n}{dimpulse}\PYG{p}{(}\PYG{n}{sys}\PYG{p}{,} \PYG{n}{n}\PYG{o}{=}\PYG{n}{N\PYGZus{}sim}\PYG{p}{)}
+    \PYG{n}{A1}\PYG{p}{,} \PYG{n}{L0} \PYG{o}{=} \PYG{n}{lagd}\PYG{p}{(}\PYG{n}{a}\PYG{p}{,} \PYG{n}{N}\PYG{p}{)}
+    \PYG{n}{L} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{((}\PYG{n}{N\PYGZus{}sim}\PYG{p}{,} \PYG{n}{N}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{))}
+    \PYG{n}{L}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{p}{:]} \PYG{o}{=} \PYG{n}{L0}
+    \PYG{k}{for} \PYG{n}{k} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{N\PYGZus{}sim}\PYG{p}{):}
+    \PYG{n}{L}\PYG{p}{[}\PYG{n}{k}\PYG{p}{,} \PYG{p}{:]} \PYG{o}{=} \PYG{n}{A1} \PYG{o}{@} \PYG{n}{L}\PYG{p}{[}\PYG{n}{k} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{p}{:]}
+        \PYG{n}{cs} \PYG{o}{=} \PYG{p}{[}\PYG{n}{L}\PYG{p}{[:,} \PYG{n}{i}\PYG{p}{]}\PYG{o}{.}\PYG{n}{reshape}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{N\PYGZus{}sim}\PYG{p}{)} \PYG{o}{@} \PYG{n}{ys} \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{N}\PYG{p}{)]}
+    \PYG{k}{return} \PYG{n}{cs}\PYG{p}{,} \PYG{n}{L}
+\end{Verbatim}

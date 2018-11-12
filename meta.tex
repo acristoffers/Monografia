@@ -50,7 +50,8 @@
 \newcolumntype{L}{>{\centering\arraybackslash}m{3cm}}
 
 % Utilities
-\usepackage[usenames,dvipsnames]{xcolor} % More colors:
+\usepackage[section]{minted} % Code highlighting with Pygments
+% \usepackage[usenames,dvipsnames]{xcolor} % More colors:
 \usepackage{pdfpages} % Advanced PDF importing
 \usepackage{pdflscape} % One page panorama
 \usepackage[european,cuteinductors,smartlabels]{circuitikz} % For circuits
@@ -74,3 +75,18 @@
 \renewcommand{\ABNTEXchapterfontsize}{\huge}
 \ChTitleVar{\ABNTEXchapterfontsize\ABNTEXchapterfont}
 \setsecheadstyle{\bfseries\Large}
+
+% Removes red boxes when lexer can't understand something (like @ in Python 3)
+\AtBeginEnvironment{minted}{\renewcommand{\fcolorbox}[4][]{#4}}
+
+% pythoncode environment for hightlight
+\newminted{python3}
+{autogobble,linenos,python3,fontseries=Consolas,fontsize=\scriptsize,frame=lines}
+\newmintedfile[python]{python3}
+{autogobble,linenos,python3,fontseries=Consolas,fontsize=\scriptsize,frame=lines}
+
+% ccode environment for highlight
+\newminted{c}
+{autogobble,linenos,fontseries=Consolas,fontsize=\scriptsize,frame=lines}
+
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}

@@ -4,37 +4,40 @@
 \begin{abstract}
 	Controle preditivo baseado em modelo (\ac{MPC} --- \textit{model predictive
 	control}) é uma técnica avançada de controle que permite a inserção de
-	restrições no equacionamento do controlador. Seu objetivo é encontrar a
-	trajetória de controle ótima que respeite as restrições impostas, que podem
-	ser na amplitude ou variação do sinal de controle, de saída ou de um estado.
-	Ele já está estabelecida em indústrias que lidam com processos
-	multi-variáveis de dinâmica lenta, especialmente na indústria petro-química.
-	Sua formulação mais comum é utilizando modelos por espaço de estados, o que
-	requer que todos os estados sejam conhecidos. Como nem sempre é possível
-	medi-los, faz-se necessário o uso de observadores, que são técnicas de
-	estimar os estados do sistema a partir do modelo, sinal de controle e um
-	estado medido. Utilizando técnicas de modelagem pouco exploradas, como
-	sistemas a parâmetros distribuídos (\ac{SPD}), pode-se utilizar observadores
-	para estimar parâmetros do sistema em pontos de intenteresse onde não é
-	possível ou viável inserir sensores. Assim pode-se, por exemplo, medir-se a
+	restrições no sinal de controle e de variação dos estados do sistema na
+	etapa de equacionamento do controlador. Seu objetivo é encontrar a
+	trajetória de controle ótima que respeite as restrições impostas. O MPC já
+	está estabelecido em indústrias que lidam com processos multivariáveis de
+	dinâmica lenta, especialmente na indústria petro-química. Sua formulação
+	mais comum utiliza modelos descrito no espaço de estados, o que requer que
+	todos os estados sejam conhecidos. Como nem sempre é possível medi-los,
+	faz-se necessário o uso de observadores, que são técnicas de estimar os
+	estados do sistema a partir dos sinais de entrada e saída por meio do modelo
+	dinâmico do sistema. Utilizando técnicas de modelagem, como por exemplo os
+	métodos lineares \ac{ARMAX} (do inglês \textit{autoregressive moving avarage
+	with exogenous inputs}), pode-se obter um modelo a parâmetros concentrados
+	cujos coeficientes dependem do espaço (\ac{SPD} --- sistema a parâmetros
+	distribuídos). Esses modelos SPD pode ser utilizados por observadores para
+	estimar os estados do sistema em pontos de intenteresse onde não é possível
+	ou viável inserir sensores. Assim pode-se, por exemplo, medir-se a
 	temperatura na extremidade de um sólido e, através desta, recuperar-se a
-	temperatura em algum ponto no meio do sólido. Ao combinar as três técnicas é
-	possível controlar uma variável em um ponto diferente daquele sendo medido.
-	Assim propõe-se o desenvolvimento e implementação de um controlador \ac{MPC}
-	que utilize \ac{SPD} para realizar o controle de uma variável estimada em um
-	ponto intermediário. Para isso será utilizada a planta presente no
-	laboratório de sinais e sistemas. O modelo \ac{SPD} utilizado será o
-	desenvolvido por~\textcite{masterthesis:nelson}. A implementação será feita
-	utilizando os softwares \textit{Moirai} e \textit{Lachesis}, desenvolvidos
-	\textit{in loco}, que serão atualizados de forma a comunicar com o
-	\textit{hardware} da planta e receberá atualizações visando sua melhoria.
-	Também será feita alteração na microeletrônica da planta, com a finalidade
-	de prover um meio alternativo para acionamento do forno. Pretende-se com
+	temperatura em algum ponto no meio do sólido, desde que o modelo dinâmico de
+	propagação seja conhecido. Ao combinar o modelo \ac{ARMAX}, o controlador
+	\ac{MPC} e o observador de estados é possível controlar uma variável em um
+	ponto diferente daquele sendo medido. Assim propõe-se o desenvolvimento e
+	implementação de um controlador \ac{MPC} que utilize modelos \ac{SPD} para
+	realizar o controle de uma variável estimada em um ponto intermediário de um
+	sistema distribuído espacialmente. Para isso será utilizada a planta
+	presente no Laboratório de Sinais e Sistemas do \textit{campus} V do
+	CEFET-MG. O modelo \ac{SPD} utilizado é o desenvolvido
+	por~\textcite{masterthesis:nelson}. A implementação é feita utilizando os
+	softwares \textit{Moirai} e \textit{Lachesis}, desenvolvidos \textit{in
+	loco}, que foram atualizados de forma a comunicar com o \textit{hardware} da
+	planta que receberam atualizações visando suas melhorias. Pretende-se com
 	este trabalho, que envolve principalmente as áreas de controle e computação,
-	aprofundar os estudos do grupo de modelagem e controle de processos
-	mecatrônicos em \ac{SPD} e \ac{MPC}, bem como facilitar futuros trabalhos
-	nesta e outras plantas, através do melhor desenvolvimento e teste da
-	plataforma de controle.
+	aprofundar os estudos do Grupo de Modelagem e Controle de Sistemas
+	Mecatrônicos na utilização de modelos \ac{SPD} e do \ac{MPC},  bem como
+	facilitar futuros trabalhos nesta e outras plantas.
 \end{abstract}
 
 Palavras-chave: Controle preditivo por modelo, sistema a parâmetros
@@ -44,38 +47,40 @@ Palavras-chave: Controle preditivo por modelo, sistema a parâmetros
 
 \begin{otherlanguage}{english}
 	\begin{abstract}
-		Model predictive control (MPC) is an advanced control technique that
-		allows the insertion of constraints in the controller equation. Its
-		objective is to find the optimal control trajectory that respects the
-		constraints imposed, which can be in the amplitude or variation of the
-		control signal, output or a state. It is already established in
-		industries dealing with multi-variable processes of slow dynamics,
-		especially in the petrochemical industry. Its most common formulation is
-		to use state-space models, which requires all states to be known. As it
-		is not always possible to measure them, it is necessary to use
-		observers, which are techniques of estimating the states of the system
-		from the model, control signal and a measured state. Using less
-		exploited modeling techniques, such as distributed parameters systems
-		(DPS), observers can be used to estimate system parameters at points of
-		intent where it is not possible or feasible to insert sensors. Thus, for
-		example, one can measure the temperature at the end of a solid and
-		therethrough recover the temperature at some point in the middle of the
-		solid. By combining the three techniques it is possible to control a
-		variable at a point other than the one being measured. Thus it is
-		proposed the development and implementation of an MPC controller that
-		uses SPD to perform the control of an estimated variable in an
-		intermediate point. For this, the plant will be used in the signal and
-		system laboratory. The SPD model used will be the one developed
-		by~\textcite{masterthesis:nelson}. The implementation will be made using
-		the Moirai and Lachesis softwares, developed \textit{in loco}, which
-		will be updated in order to communicate with the plant hardware and
-		receive updates to improve it. Also, there will be made change in the
-		microelectronics of the plant, in order to provide an alternative means
-		to drive it. It is intended that this work, which mainly involves the
-		areas of control and computation, to deepen the studies of the modeling
-		and control group of mechatronic processes in DPS and MPC, as well as to
-		facilitate future works in this and other plants, through the best
-		development and test of the control platform.
+		Model Predictive Control (\ac{MPC}) is an advanced control technique
+		that allows the insertion of restrictions in the control signal and in
+		the variation of the system states in the controller equation stage. Its
+		goal is to find the optimal trajectory of the control signal that
+		respects the restrictions imposed. The MPC is already established in
+		industries dealing with multivariate, slow dynamics systems, especially
+		in the petrochemical industry. Its formulation most commonly uses models
+		described in state space, what requires all states to be known. As it is
+		not always possible to measure them, observers, which are techniques of
+		estimating states from the input and output signals, are employed. Using
+		modeling techniques, such as \ac{ARMAX} (autoregressive moving avarage
+		with exogenous inputs), one can obtain a model with concentrated
+		parameters whose coefficients depend on the space (DPS --- distributed
+		parameters system). These DPS models can be used to estimate the states
+		of the system at points of interest where it is not possible or feasible
+		to insert sensors. Thus, one can measure, for example, the temperature
+		at the end of a solid and, through an observer, recover the temperature
+		at some point in the middle of the solid, provided that the dynamic
+		propagation is known. When combining the \ac{ARMAX} model, the \ac{MPC}
+		controller and the state observer it is possible to control a variable
+		in a different spacial point from that being measured. Thus, the
+		development and implementation of a \ac{MPC} controller using DPS to
+		control an estimated variable at an intermediate point of a spatially
+		distributed system is proposed. For this the plant used will be the one
+		present in the Laboratory of Signals and Systems at \textit{campus} V of
+		CEFET-MG. The DPS model used is the one developed
+		by~\textcite{masterthesis:nelson}. The implementation is done using the
+		Moirai and Lachesis softwares, developed \textit{in loco}, which have
+		been updated in order to communicate with the hardware of the plant. The
+		software received updates aimed at its improvements. It is intended to
+		this work, which mainly involves the areas of control and computation,
+		to deepen the studies of the Group of Modeling and Control of Systems
+		Mechatronics in the use of DPS and MPC models, as well as facilitate
+		future work in this and other plants.
     \end{abstract}
     
     Keywords: Model predictive control, distributed parameters system, Kalman

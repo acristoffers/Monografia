@@ -8,6 +8,50 @@ Para a realização deste trabalho é necessário conhecimento nas áreas de con
 preditivo por modelo e sistemas a parâmetros distribuídos. Este capítulo visa
 explicar sucintamente esses conceitos.
 
+\section{Sistemas}%
+\label{sec:systems}
+
+Os sistemas de tanques comunicantes e forno utilizados são descritos a seguir.
+
+\subsection{Tanques}%
+\label{subsec:tanks}
+
+O sistema de tanques é composto por quatro tanques comunicantes. Os dois tanques
+superiores foram utilizados para teste do controlador. Trata-se de dois
+recipientes de \SI{200}{\litre} com uma válvula entre ambos, que permite a
+passagem de água de um para o outro. Há também válvulas na saída dos tanques,
+que permitem que a mesma flua para os tanques inferiores. O atuador bombeia a
+água para o tanque T1. Essa flui para o tanque T2 e sai do sistema. O objetivo
+de controle é a altura da coluna d'água no tanque T2.
+
+\subsection{Forno}%
+\label{subsec:oven}
+
+O forno presente no Laboratório de Sinais e Sistemas pode ser visto na
+Figura~\ref{fig:forno}. Nela estão demarcados os principais elementos do
+sistema. Ele é composto por um túnel de acrílico onde o ar entra forçadamente
+por um \textit{cooler} em uma de suas extremidades. No percurso há 3
+resistências, denominadas \(R1\), \(R2\) e \(R3\) e 10 sensores, \(S1\) a
+\(S10\).
+
+\begin{figure}[ht!]
+    \centering
+    \captionsetup{justification=centering}
+    \includegraphics[height=0.5\linewidth]{imgs/forno}
+    \caption{Forno utilizado}%
+    \label{fig:forno}
+\end{figure}
+
+Nesse trabalho apenas a resistência \(R2\) é utilizada. O sensor \(S10\) foi
+posto antes da mesma para medir a temperatura ambiente. O sensor \(S9\), mais
+distante da resistência, é utilizado para fins de controle, enquanto os outros
+são medidos apenas para fim de validação do observador, conferindo sua medida
+com a estimação do observador.
+
+Um laminador foi inserido logo após a resistência para que o perfil do fluxo de
+ar nos sensores não seja turbulento. Isso se fez necessário pois o fluxo
+turbulento torna a relação entre as leituras dos sensores não determinístico.
+
 \section{Controlador preditivo por modelo}%
 \label{sec:mpc}
 
@@ -30,21 +74,21 @@ de estados tem a forma
 	\end{split}
 \end{equation}
 %
-em que \( A \in R^{n \times n} \) é a matriz dinâmica do sistema, \( B in R^{n
-\times m} \) e a matriz de entrada, \( C \in R^{m \times n} \) é a matriz de
-saída. \( D \in R^{m \times m} \) é normalente \( 0 \). \( x(t) \in R^{m \times
-1} \) é o vetor de estados e \( u(t) \in R^{m \times 1} \) são as entradas do
+em que \( A \in R^{n \times n} \) é a matriz dinâmica do sistema, \( B \in R^{n
+		\times m} \) e a matriz de entrada, \( C \in R^{m \times n} \) é a matriz de
+saída. \( D \in R^{m \times m} \) é normalente \( 0 \). \(x(t) \in R^{m \times
+		1} \) é o vetor de estados e \( u(t) \in R^{m \times 1} \) são as entradas do
 sistema no instante \( t \).
 
 Neste trabalho será utilizada a formulação discreta do controlador preditivo.
 Esta formulação tem a vantagem de poder ser implementada facilmente em
 dispositivos digitais, além de permitir certo controle do tempo de amostragem.
 
-Ao discretizar um sistema altera-se sua formulação para que a matriz de dinâmica
-do sistema não mais produza a variação do estado, mas sim o valor do estado após
-\( \Delta{}t \) segundos. Um intervalo de tempo de \( \Delta{}t \) segundos é
-chamado de instante, sendo \( t = k\Delta{}t \). Para discretizar um modelo em
-espaço de estados usa-se a equação
+Ao discretizar um sistema contínuo no tempo altera-se sua formulação para que a
+matriz de dinâmica do sistema não mais produza a variação do estado, mas sim o
+valor do estado após \( \Delta{}t \) segundos. Um intervalo de tempo de \(
+\Delta{}t \) segundos é chamado de instante, sendo \( t = k\Delta{}t \). Para
+discretizar um modelo em espaço de estados usa-se a equação
 
 \begin{equation}
 	\label{eq:discretize-ss}
@@ -57,14 +101,17 @@ obtem-se
 \begin{equation}
 	\label{eq:discrete-ss}
 	\begin{split}
-		x(k+1) = A x(k) + B u(k), \\
-		y(k) = C x(k) + Du(k).
+		x(k+1) = A_d x(k) + B_d u(k), \\
+		y(k) = C_d x(k) + D_d u(k).
 	\end{split}
 \end{equation}
 
+Daqui em diante as matrizes \(A\), \(B\), \(C\) e \(D\) irão se referir ao
+sistema discreto no tempo, já que não mais será utilizado o sistema contínuo no
+tempo.
+
 Uma vez obtido o modelo discreto o mesmo deve ser aumentado com um integrador.
-Para inserir um integrador no sistema utiliza-se a
-equação
+Para inserir um integrador no sistema utiliza-se a equação
 
 \begin{equation}
 	\label{eq:augment-matrix}
@@ -73,8 +120,8 @@ equação
 		y(k+1)
 	\end{bmatrix} =
 	\begin{bmatrix}
-		A         & 0_m^T \\
-		C\cdot{}A & 1
+		A  & 0_m^T \\
+		CA & 1
 	\end{bmatrix}
 	\begin{bmatrix}
 		\Delta x(k) \\
@@ -82,7 +129,7 @@ equação
 	\end{bmatrix} +
 	\begin{bmatrix}
 		B \\
-		C\cdot{}B
+		CB
 	\end{bmatrix}
 	\Delta u(k).
 \end{equation}
@@ -182,7 +229,7 @@ Essa substituição é possível, pois, devido à presença do integrador, um va
 \( \Delta{}U = 0 \) significa que o último sinal aplicado é mantido.
 
 Para compreender melhor este conceito tome com exemplo um sistema de tanques
-onde deseja-se controlar o nível alterando-se a vazão de uma bomba. Para todo
+o qual deseja-se controlar o nível alterando-se a vazão de uma bomba. Para todo
 \( N_p > N_c \) tem-se uma vazão de 0, ou seja, a bomba seria desligada. Isso
 faria com que o nível caísse toda vez que o sistema alcançasse o equilíbrio.
 Utilizando \( \Delta{}U \) o valor zero significa manter a última vazão apicada,
@@ -203,8 +250,8 @@ controle, tem-se
 \end{equation}
 %
 em que \( R_s \) é o vetor referência com a mesma dimensão do vetor \( Y \) e
-\(\bar{R} \) é uma variável que pode ser usada para controlar o peso da variação
-do sinal de controle. \( \bar{R} \) maior implica em variações menores.
+\(\bar{R} \) é uma variável que pode ser usada para ponderar a variação do sinal
+de controle. \( \bar{R} \) maior implica em variações menores.
 
 Substituindo~\eqref{eq:Y} em~\eqref{eq:cost-function} tem-se
 
@@ -238,8 +285,6 @@ considerada a maior vantagem desta técnica de controle: restrição do sinal de
 controle, da saída, de estados ou de suas variações. Para isto é necessário
 voltar na função de custo e resolvê-la de uma maneira que permita a inserção
 de restrições no equacionamento.
-
-\pagebreak
 
 \subsection{Restrições de parâmetros}%
 \label{subsec:mpc-restricted}
@@ -339,7 +384,7 @@ tem-se
 	\begin{bmatrix}
 		\Delta{}u(k)       \\
 		\Delta{}u(k+1)     \\
-		\vdots
+		\vdots             \\
 		\Delta{}u(k+N_c-1) \\
 	\end{bmatrix},
 \end{equation}
@@ -376,7 +421,7 @@ Reduzindo estas restrições em uma única inequação matricial, obtem-se
 %
 sendo
 %
-\begin{equation*}
+\begin{equation}
 	\begin{split}
 		M_1 =
 		\begin{bmatrix}
@@ -409,7 +454,7 @@ sendo
 			Y^{\max} - Fx(k)
 		\end{bmatrix}.
 	\end{split}
-\end{equation*}
+\end{equation}
 
 Pode-se inserir outras restrições, como em estados, por exemplo, seguindo essa
 lógica de formulação. Obtem-se então todas as restrições descritas na forma
@@ -441,13 +486,11 @@ as comumente utilizadas por matemáticos ao trabalhar com estes métodos.
 Reescrevendo~\eqref{eq:cost-function} no formato de~\eqref{eq:cost-function-qp},
 encontra-se
 %
-\begin{equation}
+\begin{align}
 	\label{eq:cost-function-qp-constants}
-	\begin{split}
-		E = \Phi^T \Phi + \bar{R} \\
-		F = \Phi^T (Fx - R_s),
-	\end{split}
-\end{equation}
+	E & = \Phi^T \Phi + \bar{R} \\
+	F & = \Phi^T (Fx - R_s),
+\end{align}
 %
 no qual \( E \) e \( F \) à esquerda da igualdade vem da
 equação~\eqref{eq:cost-function-qp} e \( \Phi \), \( F \), \( R_s \) e \(\bar{R}
@@ -472,7 +515,250 @@ solução para o conjunto completo que para o subconjunto ativo de restrições.
 vantagem de encontrar o conjunto ativo é reduzir o custo computacional da
 otimização.
 
-\pagebreak
+\subsection{Funções de Laguerre}%
+\label{subsec:mpc-laguerre}
+
+O modelo aumentado adotado até aqui torna os cálculos extremamente onerosos
+computacionalmente conforme aumentamos o horizonte de controle. Teoricamente os
+resultados retornados seriam os mesmos independente da dimensão do sistema. No
+entanto, diferenças numéricas e a presença de ruídos e incertezas fazem com que
+os resultados não sejam iguais. Torna-se então interessante que o modelo utilize
+um horizonte de controle maior. Uma solução adotada é o uso de funções de
+Laguerre, que diminui o número de parâmetros necessários para descrever uma
+grande janela de controle.
+
+Redes de Laguerre discretas no tempo modelam um sinal utilizando uma série de
+impulsos. Retomando o vetor de variações do sinal de controle
+%
+\begin{equation}
+	\Delta{}U = \begin{bmatrix}
+		\Delta{}u(k_i)     &
+		\Delta{}u(k_i + 1) &
+		\Delta{}u(k_i + 2) &
+		\hdots{}           &
+		\Delta{}u(k_i + N_c - 1)
+	\end{bmatrix}^T,
+\end{equation}
+%
+podemos escrever os elementos dentro de \(\Delta{}U\) como
+%
+\begin{equation}
+	\Delta{}u(k+i) = \begin{bmatrix}
+		\delta{}(i)           &
+		\delta{}(i-1)         &
+		\hdots{}              &
+		\delta{}(i - N_c + 1) &
+	\end{bmatrix}\Delta{}U,
+\end{equation}
+%
+sendo \(\delta{}(i)\) a função de impulso discreto, sendo \(\delta{}(0) = 1\) e
+\(\delta{}(i\neq{}0) = 0\). A rede de Laguerre discreta é composta por uma série
+de sistemas \(\Gamma{}\) da forma
+%
+\begin{equation}
+	\label{eq:laguerre-system-z}
+	\Gamma{}_N(z) = \frac{\sqrt{1-a^2}}{1-az^{-1}}\frac{z^{-1}-a}{1-az^{-1}}^{N-1},
+\end{equation}
+%
+em que \(a\) é a localização do polo da rede, variando de 0 a 1.
+
+Tomando
+%
+\begin{equation}
+	\label{eq:laguerre-L}
+	L(k) = \begin{bmatrix}
+		l_1(k)   &
+		l_2(k)   &
+		l_3(k)   &
+		\hdots{} &
+		l_N(k)
+	\end{bmatrix}^T
+\end{equation}
+%
+pode-se escrever
+%
+\begin{equation}
+	L(k+1) = A_\ell{}L(k),
+\end{equation}
+%
+se for definido \(\beta{}=1-a^2\),
+%
+\begin{equation}
+	{L(0)}^{T} = \sqrt{\beta}\begin{bmatrix}
+		1 & -a & a^2 & -a^3 & \hdots{} & {(-1)}^{N-1}a^{N-1}
+	\end{bmatrix}
+\end{equation}
+%
+e
+%
+\begin{equation}
+	A_\ell{} = \begin{bmatrix}
+		a          & 0         & 0        & 0        & \hdots{} & 0        \\
+		\beta{}    & a         & 0        & 0        & \hdots{} & 0        \\
+		-a\beta{}  & \beta{}   & a        & 0        & \hdots{} & 0        \\
+		a^2\beta{} & -a\beta{} & \beta{}  & a        & \hdots{} & 0        \\
+		\vdots{}   & \vdots{}  & \vdots{} & \vdots{} & \hdots{} & \vdots{}
+	\end{bmatrix}.
+\end{equation}
+
+No caso especial \(a=0\), a matriz \(A_\ell{}\) se torna
+%
+\begin{equation}
+	A_\ell{} = \begin{bmatrix}
+		0        & 0        & 0 \hdots{} & 0        & 0        \\
+		1        & 0        & 0 \hdots{} & 0        & 0        \\
+		0        & 1        & 0 \hdots{} & 0        & 0        \\
+		0        & 0        & 1 \hdots{} & 0        & 0        \\
+		\vdots{} & \vdots{} & \vdots{}   & \vdots{} & \vdots{} \\
+		0        & \hdots{} & 0          & 1        & 0
+	\end{bmatrix},
+\end{equation}
+%
+e o vetor de condição inicial se torna
+%
+\begin{equation}
+	{L(0)}^{T} = \begin{bmatrix}
+		1 & 0 & 0 & 0 & \hdots{} & 0
+	\end{bmatrix},
+\end{equation}
+%
+que é exatamente o caso utilizado até a seção anterior, ou seja, o caso estudado
+até então é um caso especial da formulação por Laguerre.
+
+Um sistema pode ser descrito utilizando uma rede de funções de laguerre ao
+encontrar-se os coeficientes \(c_i\) tal que, para \(N\) termos,
+%
+\begin{equation}
+	H(k) = c_{1}(k)l_{1}(k) + c_{2}(k)l_{2}(k) + \hdots{} + c_{N}(k)l_{N}(k).
+\end{equation}
+
+Assim, o problema de descrever o sistema se torna um problema de determinação de
+coeficientes. O seguinte código Python calcula os coeficientes e o conjunto de
+funções L para um determinado sistema. Note que a entrada \textit{sys} é um
+\textit{tuple} do tipo (A, B, C, D, dt).
+
+\python{py/laguerre1.py}
+
+A trajetória de controle definida como uma sequência de variações do sinal de
+controle (\(\Delta{}u\)) é vista como uma sequência de impulsos aplicados ao
+sistema. Dessa forma, um conjunto de funções de Laguerre pode ser utilizado para
+descrever essa dinâmica, resultando em
+%
+\begin{equation}
+	\Delta{}u(k_i+k) = \sum^{N}_{j=1}{c_j(k_i)l_j(k)}.
+\end{equation}
+
+Retomando a Equação~\eqref{eq:laguerre-L}, pode-se reescrever essa equação como
+%
+\begin{equation}
+	\Delta{}u(K_i + k) = {L(k)}^{T}\eta{},
+\end{equation}
+%
+sendo
+%
+\begin{equation}
+	\eta{} = \begin{bmatrix} c_1 & c_2 & \hdots{} & c_N \end{bmatrix}^T.
+\end{equation}
+
+Dessa forma, \(\Delta{}u(k_i+k)\) passa a depender dos parâmetros \(\eta{}\),
+que são os mesmos para todo \(\Delta{}u\), e \(L(k)\), que é calculado offline.
+Assim, pode-se substituir a otimização de \(\Delta{}U\) pela minimização de
+\(\eta{}\), que tem tamanho N. Note que a relação entre o tamanho de \(\eta{}\)
+e \(\Delta{}U\) é a dimensão de \(L(k)\) e a quantidade de funções utilizadas, o
+que permite descrever mais variações de sinal de controle com menos variáveis.
+
+A função de custo deve ser reescrita. Como a prova é extensa, apenas os
+resultados serão apresentados. Caso o leitor deseje verificar o raciocínio, a
+prova completa é apresentada no capítulo 3 do livro da \textcite{book:wang}.
+
+A função de custo continua sendo a mesma utilizada anteriormente para resolução
+através de programação quadrática, porém suas constantes e variavel objetivo
+são alteradas para refletir o modelo de Laguerre, resultando em
+%
+\begin{equation}
+	J = \eta{}^{T}\Omega{}\eta{} + 2\eta{}^{T}\Psi{}x(k_i),
+\end{equation}
+%
+em que
+%
+\begin{align}
+	\Omega{} & = \sum^{N_p}_{m=1}{\Phi{}(m)Q\Phi{}{(m)}^{T}+R_{L}}, \\
+	\Psi{}   & = \sum^{N_p}_{m=1}{\Phi{}(m)QA^m},                   \\
+	\Phi{}^T & = \sum^{m-1}_{j=0}{A^{m-j-1}BL_{k}{(j)}^{T}}.
+\end{align}
+
+Para fins de simulação,
+%
+\begin{align}
+	\eta{} & = \frac{L(0)}{\norm{L(0)}^2}u, \\
+	x(k+1) & = Ax(k) + BL{(0)}^{T}\eta{}.
+\end{align}
+
+O seguinte código calcula as constantes \(\Omega{}\), \(\Psi{}\) e \(\Phi{}\):
+
+\python{py/laguerre2.py}
+
+As restrições também devem ser reescritas, mapeando o máximos e mínimos
+desejados em \(\Delta{}U\), \(U\) e \(Y\) para \(\eta{}\). Assim, a restrição em
+\(\Delta{}U\) pode ser reescrita como
+%
+\begin{align}
+	M\eta{}  & \le \Delta{}U^{\max}  \\
+	-M\eta{} & \le \Delta{}U^{\min},
+\end{align}
+%
+em que
+%
+\begin{equation}
+	M = \begin{bmatrix}
+		L_1^T    & 0        & \hdots{} & 0        \\
+		0        & L_2^T    & \hdots{} & 0        \\
+		\vdots{} & \vdots{} & \ddots{} & \vdots{} \\
+		0        & 0        & \hdots{} & L_m^T
+	\end{bmatrix}.
+\end{equation}
+
+A restrição da amplitude do sinal de controle é dada por
+%
+\begin{align}
+	M\eta{}  & \le U^{\max} - u(k-1)   \\
+	-M\eta{} & \le -U^{\max} + u(k-1),
+\end{align}
+%
+em que
+%
+\begin{equation}
+	M = \begin{bmatrix}
+		\sum^{k-1}_{i=0}{L_1^T} & 0                       & \hdots{} & 0                       \\
+		0                       & \sum^{k-1}_{i=0}{L_2^T} & \hdots{} & 0                       \\
+		\vdots{}                & \vdots{}                & \ddots{} & \vdots{}                \\
+		0                       & 0                       & \hdots{} & \sum^{k-1}_{i=0}{L_m^T}
+	\end{bmatrix}.
+\end{equation}
+
+A restrição da amplitude da saída se torna
+%
+\begin{align}
+	M\eta{}  & \le Y^{\max} - CAx(k-1)   \\
+	-M\eta{} & \le -Y^{\max} + CAx(k-1),
+\end{align}
+%
+em que
+%
+\begin{equation}
+	M = \begin{bmatrix}
+		CBL_1^T  & 0        & \hdots{} & 0        \\
+		0        & CBL_2^T  & \hdots{} & 0        \\
+		\vdots{} & \vdots{} & \ddots{} & \vdots{} \\
+		0        & 0        & \hdots{} & CBL_m^T
+	\end{bmatrix}.
+\end{equation}
+
+O código Python a seguir calcula essas restrições para os primeiros termos, no
+formato utilizado pela função de minimização quadrática.
+
+\python{py/laguerre3.py}
+\vfill{}
 
 \section{Sistemas a parâmetros distribuídos}%
 \label{sec:spd}
@@ -502,11 +788,11 @@ modelos \ac{SPC} para tal.
 	\begin{tikzpicture}
 		% thick line on middle
 		\draw[line width=2pt] (0,2) -- (8,2);
-            \node[circle,fill,inner sep=2pt,label=above:{$y(s_0,t)$}] at (0,2) {};
-            \node[circle,fill,inner sep=2pt,label=above:{$y(s_1,t)$}] at (2,2) {};
-            \node[circle,fill,inner sep=2pt,label=above:{$y(s_2,t)$}] at (4,2) {};
-            \node at (6,2.3) {$\hdots$};
-            \node[circle,fill,inner sep=2pt,label=above:{$y(s_n,t)$}] at (8,2) {};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(s_0,t)$}] at (0,2) {};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(s_1,t)$}] at (2,2) {};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(s_2,t)$}] at (4,2) {};
+		\node at (6,2.3) {$\hdots$};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(s_n,t)$}] at (8,2) {};
 		% s indicator on top
 		\draw(0,3) -- (0,3.5);
 		\draw[->] (0,3.25) -- (1,3.25);
@@ -522,18 +808,18 @@ modelos \ac{SPC} para tal.
 		\draw[<->] (3.5,1.5) -- (4.5,1.5);
 		% u line
 		\draw[->] (0,1) -- (0,1.9);
-            \node at (0.7,1.5) {$u(0,t)$};
-            % blocks
-            \node[draw,text width=5pt,text height=5pt] at (0.0,-2) (s0) {};
-            \node[draw,text width=5pt,text height=5pt] at (2,-2) (s1) {};
-            \node[draw,text width=5pt,text height=5pt] at (3.8,-2) (s2) {};
-            \node at (5.75,-2) (s3) {$\hdots$};
-            \node[draw,text width=5pt,text height=5pt] at (8.0,-2) (s4) {};
-            \draw[->] (-1.5,-2) -- node[above] {$u(0,t)$} ++ (s0);
-            \draw[->] (s0) -- node[above] {$y(s_0,t)$} ++ (s1);
-            \draw[->] (s1) -- node[above] {$y(s_1,t)$} ++ (s2);
-            \draw[->] (s2) -- node[above] {$y(s_2,t)$} ++ (s3);
-            \draw[->] (s3) -- node[above] {$y(s_{n-1},t)$} ++ (s4);
+		\node at (0.7,1.5) {$u(0,t)$};
+		% blocks
+		\node[draw,text width=5pt,text height=5pt] at (0.0,-2) (s0) {};
+		\node[draw,text width=5pt,text height=5pt] at (2,-2) (s1) {};
+		\node[draw,text width=5pt,text height=5pt] at (3.8,-2) (s2) {};
+		\node at (5.75,-2) (s3) {$\hdots$};
+		\node[draw,text width=5pt,text height=5pt] at (8.0,-2) (s4) {};
+		\draw[->] (-1.5,-2) -- node[above] {$u(0,t)$} ++ (s0);
+		\draw[->] (s0) -- node[above] {$y(s_0,t)$} ++ (s1);
+		\draw[->] (s1) -- node[above] {$y(s_1,t)$} ++ (s2);
+		\draw[->] (s2) -- node[above] {$y(s_2,t)$} ++ (s3);
+		\draw[->] (s3) -- node[above] {$y(s_{n-1},t)$} ++ (s4);
 	\end{tikzpicture}
 	\caption{Subsistemas interconectados}%
 	\label{fig:interconected-subsystems}
@@ -556,11 +842,11 @@ vários pontos no espaço sem a necessidade de remodelar o sistema.
 	\begin{tikzpicture}
 		% thick line on middle
 		\draw[line width=2pt] (0,2) -- (8,2);
-            \node[circle,fill,inner sep=2pt,label=above:{$y(s_0,t)$}] at (0,2) {};
-            \node[circle,fill,inner sep=2pt,label=above:{$y(s_1,t)$}] at (2,2) {};
-            \node[circle,fill,inner sep=2pt,label=above:{$y(s_2,t)$}] at (4,2) {};
-            \node at (6,2.3) {$\hdots$};
-            \node[circle,fill,inner sep=2pt,label=above:{$y(s_n,t)$}] at (8,2) {};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(s_0,t)$}] at (0,2) {};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(s_1,t)$}] at (2,2) {};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(s_2,t)$}] at (4,2) {};
+		\node at (6,2.3) {$\hdots$};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(s_n,t)$}] at (8,2) {};
 		% s indicator on top
 		\draw(0,3) -- (0,3.5);
 		\draw[->] (0,3.25) -- (1,3.25);
@@ -576,28 +862,28 @@ vários pontos no espaço sem a necessidade de remodelar o sistema.
 		\draw[<->] (3.5,1.5) -- (4.5,1.5);
 		% u line
 		\draw[->] (0,1) -- (0,1.9);
-            \node at (0.7,1.5) {$u(0,t)$};
-            % blocks
-            %% s0
-            \node[draw,text width=5pt,text height=5pt] at (0,-2) (s0) {};
-            \node[text width=5pt,text height=5pt] at (2,-2) (s0e) {};
-            \draw[->] (-1.5,-2) -- node[above] {$u(0,t)$} ++ (s0);
-            \draw[->] (s0) -- node[above] {$y(s_0,t)$} ++ (s0e);
-            %% s1
-            \node[draw,text width=2cm,text height=5pt] at (1,-4) (s1) {};
-            \node[text width=5pt,text height=5pt] at (4,-4) (s1e) {};
-            \draw[->] (-1.5,-4) -- node[above] {$u(0,t)$} ++ (s1);
-            \draw[->] (s1) -- node[above] {$y(s_1,t)$} ++ (s1e);
-            %% s2
-            \node[draw,text width=4cm,text height=5pt] at (2,-6) (s2) {};
-            \node[text width=5pt,text height=5pt] at (6,-6) (s2e) {};
-            \draw[->] (-1.5,-6) -- node[above] {$u(0,t)$} ++ (s2);
-            \draw[->] (s2) -- node[above] {$y(s_2,t)$} ++ (s2e);
-            %% sn
-            \node[draw,text width=8cm,text height=5pt] at (4,-8) (sn) {};
-            \node[text width=5pt,text height=5pt] at (10,-8) (sne) {};
-            \draw[->] (-1.5,-8) -- node[above] {$u(0,t)$} ++ (sn);
-            \draw[->] (sn) -- node[above] {$y(s_n,t)$} ++ (sne);
+		\node at (0.7,1.5) {$u(0,t)$};
+		% blocks
+		%% s0
+		\node[draw,text width=5pt,text height=5pt] at (0,-2) (s0) {};
+		\node[text width=5pt,text height=5pt] at (2,-2) (s0e) {};
+		\draw[->] (-1.5,-2) -- node[above] {$u(0,t)$} ++ (s0);
+		\draw[->] (s0) -- node[above] {$y(s_0,t)$} ++ (s0e);
+		%% s1
+		\node[draw,text width=2cm,text height=5pt] at (1,-4) (s1) {};
+		\node[text width=5pt,text height=5pt] at (4,-4) (s1e) {};
+		\draw[->] (-1.5,-4) -- node[above] {$u(0,t)$} ++ (s1);
+		\draw[->] (s1) -- node[above] {$y(s_1,t)$} ++ (s1e);
+		%% s2
+		\node[draw,text width=4cm,text height=5pt] at (2,-6) (s2) {};
+		\node[text width=5pt,text height=5pt] at (6,-6) (s2e) {};
+		\draw[->] (-1.5,-6) -- node[above] {$u(0,t)$} ++ (s2);
+		\draw[->] (s2) -- node[above] {$y(s_2,t)$} ++ (s2e);
+		%% sn
+		\node[draw,text width=8cm,text height=5pt] at (4,-8) (sn) {};
+		\node[text width=5pt,text height=5pt] at (10,-8) (sne) {};
+		\draw[->] (-1.5,-8) -- node[above] {$u(0,t)$} ++ (sn);
+		\draw[->] (sn) -- node[above] {$y(s_n,t)$} ++ (sne);
 	\end{tikzpicture}
 	\caption{Subsistema LPV}%
 	\label{fig:lpv-system}
@@ -622,9 +908,9 @@ qualquer momento.
 	\begin{tikzpicture}
 		% thick line on middle
 		\draw[line width=2pt] (0,2) -- (8,2);
-            \node[circle,fill,inner sep=2pt,label=above:{$y(0,t)$}] at (0,2) {};
-            \node[circle,fill,inner sep=2pt,label=above:{$y(s_l,t)$}] at (4,2) {};
-            \node[circle,fill,inner sep=2pt,label=above:{$y(L,t)$}] at (8,2) {};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(0,t)$}] at (0,2) {};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(s_l,t)$}] at (4,2) {};
+		\node[circle,fill,inner sep=2pt,label=above:{$y(L,t)$}] at (8,2) {};
 		% s indicator on top
 		\draw(0,3) -- (0,3.5);
 		\draw[->] (0,3.25) -- (1,3.25);
@@ -640,14 +926,14 @@ qualquer momento.
 		\draw[<->] (3.5,1.5) -- (4.5,1.5);
 		% u line
 		\draw[->] (0,1) -- (0,1.9);
-            \node at (0.7,1.5) {$u(0,t)$};
-            % blocks
-            \node[draw,text width=3cm,text height=5pt] at (1.5,-2) (sl) {};
-            \node[draw,text width=3cm,text height=5pt] at (6.5,-2) (sl2) {};
-            \draw[->] (-1.5,-2) -- node[above] {$u(0,t)$} ++ (sl);
-            \draw[->] (sl) -- node[above] {$y(s_l,t)$} ++ (sl2);
-            \node[text width=5pt,text height=5pt] at (10,-2) (sl2e) {};
-            \draw[->] (sl2) -- node[above] {$y(L,t)$} ++ (sl2e);
+		\node at (0.7,1.5) {$u(0,t)$};
+		% blocks
+		\node[draw,text width=3cm,text height=5pt] at (1.5,-2) (sl) {};
+		\node[draw,text width=3cm,text height=5pt] at (6.5,-2) (sl2) {};
+		\draw[->] (-1.5,-2) -- node[above] {$u(0,t)$} ++ (sl);
+		\draw[->] (sl) -- node[above] {$y(s_l,t)$} ++ (sl2);
+		\node[text width=5pt,text height=5pt] at (10,-2) (sl2e) {};
+		\draw[->] (sl2) -- node[above] {$y(L,t)$} ++ (sl2e);
 	\end{tikzpicture}
 	\caption{Subsistemas LPV interconectados}%
 	\label{fig:nelson-system}
@@ -671,8 +957,8 @@ modelos é
 	\label{eq:lpv-polynom-generic-sl}
 	\begin{split}
 		y(s_\ell,k) = -\sum_{i_y=1}^{n_y}a_{i_y}(s_\ell)y(0,k-i_y)
-					+\sum_{i_u=n_k}^{n_k+n_u-1}b_{i_u}(s_\ell)y(s_\ell,k-i_u) \\
-					+\sum_{i_v=1}^{n_v}c_{i_v}(s_\ell)v(s_\ell,k-i_v)+v(s_\ell,k)
+		+\sum_{i_u=n_k}^{n_k+n_u-1}b_{i_u}(s_\ell)y(s_\ell,k-i_u) \\
+		+\sum_{i_v=1}^{n_v}c_{i_v}(s_\ell)v(s_\ell,k-i_v)+v(s_\ell,k)
 	\end{split}
 \end{equation}
 %
@@ -682,8 +968,8 @@ e
 	\label{eq:lpv-polynom-generic-L}
 	\begin{split}
 		y(L,k) = -\sum_{i_y=1}^{n_y}\alpha{}_{i_y}(\bar{s_\ell})y(L,k-i_y)
-					+\sum_{i_u=n_k}^{n_k+n_u-1}\beta{}_{i_u}(\bar{s_\ell})y(\bar{s_\ell},k-i_u) \\
-					+\sum_{i_v=1}^{n_v}\gamma{}_{i_v}(\bar{s_\ell})v(\bar{s_\ell},k-i_v)+v(\bar{s_\ell},k).
+		+\sum_{i_u=n_k}^{n_k+n_u-1}\beta{}_{i_u}(\bar{s_\ell})y(\bar{s_\ell},k-i_u) \\
+		+\sum_{i_v=1}^{n_v}\gamma{}_{i_v}(\bar{s_\ell})v(\bar{s_\ell},k-i_v)+v(\bar{s_\ell},k).
 	\end{split}
 \end{equation}
 
@@ -693,8 +979,8 @@ Após um dimencionamento inicial obtém-se
 	\label{eq:lpv-polynom-sl}
 	\begin{split}
 		y(s_\ell,k) = -a_1(s_\ell)y(s_\ell,k-1) + b_1(s_\ell)y(0,k-1) \\
-					+ c_1(s_\ell)v(s_\ell,k-1) + c_2(s_\ell)v(s_\ell,k-2)
-					+ v(s_\ell,k)
+		+ c_1(s_\ell)v(s_\ell,k-1) + c_2(s_\ell)v(s_\ell,k-2)
+		+ v(s_\ell,k)
 	\end{split}
 \end{equation}
 %
@@ -704,11 +990,11 @@ e
 	\label{eq:lpv-polynom-L}
 	\begin{split}
 		y(L,k) = -\alpha{}_1(\bar{s_\ell})y(L,k-1)
-					+ \beta{}_0(\bar{s_\ell})y(\bar{s_\ell},k)
-					+ \beta{}_1(\bar{s_\ell})y(\bar{s_\ell},k-1) \\
-					+ \gamma{}_1(\bar{s_\ell})v(\bar{s_\ell},k-1)
-					+ \gamma{}_2(\bar{s_\ell})v(\bar{s_\ell},k-2)
-					+ v(\bar{s_\ell},k),
+		+ \beta{}_0(\bar{s_\ell})y(\bar{s_\ell},k)
+		+ \beta{}_1(\bar{s_\ell})y(\bar{s_\ell},k-1) \\
+		+ \gamma{}_1(\bar{s_\ell})v(\bar{s_\ell},k-1)
+		+ \gamma{}_2(\bar{s_\ell})v(\bar{s_\ell},k-2)
+		+ v(\bar{s_\ell},k),
 	\end{split}
 \end{equation}
 %
@@ -723,45 +1009,46 @@ sendo os coeficientes na forma
 
 Obtém-se assim as funções scheduling de 3~\eqref{eq:lpv-fs3},
 5~\eqref{eq:lpv-fs5} e 9~\eqref{eq:lpv-fs9} posições, obtidas utilizando a
-técnica de mínimos quadrados para ajustar os coeficientes.
+técnica de mínimos quadrados para ajustar os
+coeficientes~\cite{masterthesis:nelson,}.
 
 \begin{equation}
 	\label{eq:lpv-fs3}
-	\begin{split}
-		b1 = 1.3291*10^{-9} s_\ell^2 - 2.2196*10^{-5} s_\ell + 0.0563  \\
-		a1 = -1.5101*10^{-8} s_\ell^2 + 1.3591*10^{-5} s_\ell - 0.9118 \\
-		w1 = 1.6636*10^{-8} s_\ell^2 - 3.2243*10^{-5} s_\ell + 0.0213  \\
-		\beta_0 = -2.5839*10^{-4} \bar{s_\ell} + 0.9036                \\
-		\beta_1 = 2.3909*10^{-4} \bar{s_\ell} - 0.8628                 \\
-		\alpha_1 = -1.6436*10^{-5} \bar{s_\ell} - 0.9559               \\
-		w2 = 4.9739*10^{-6} \bar{s_\ell} + 0.0029
-	\end{split}
+	\begin{aligned}
+		b1       & = 1.3291\times{}10^{-9} s_\ell^2 - 2.2196\times{}10^{-5} s_\ell + 0.0563  \\
+		a1       & = -1.5101\times{}10^{-8} s_\ell^2 + 1.3591\times{}10^{-5} s_\ell - 0.9118 \\
+		w1       & = 1.6636\times{}10^{-8} s_\ell^2 - 3.2243\times{}10^{-5} s_\ell + 0.0213  \\
+		\beta_0  & = -2.5839\times{}10^{-4} \bar{s_\ell} + 0.9036                     \\
+		\beta_1  & = 2.3909\times{}10^{-4} \bar{s_\ell} - 0.8628                      \\
+		\alpha_1 & = -1.6436\times{}10^{-5} \bar{s_\ell} - 0.9559                     \\
+		w2       & = 4.9739\times{}10^{-6} \bar{s_\ell} + 0.0029
+	\end{aligned}
 \end{equation}
 
 \begin{equation}
 	\label{eq:lpv-fs5}
-	\begin{split}
-		b1 = -3.3299*10^{-9} * sl^2 - 1.5982*10^{-5} * sl + 0.05711                         \\
-		a1 = -3.0164*10^{-8} * sl^2 + 3.3929*10^{-5} * sl - 0.91092                         \\
-		w1 = 1.4014*10^{-8} * sl^2 - 2.6372*10^{-5} * sl + 0.01952                          \\
-		\beta_0 = -4.8261*10^{-8} * \bar{s_\ell}^2 - 1.3554*10^{-4} * \bar{s_\ell} + 0.8171 \\
-		\beta_1 = 5.7969*10^{-8} * \bar{s_\ell}^2 + 8.1357*10^{-5} * \bar{s_\ell} - 0.7485  \\
-		\alpha_1 = 2.9771*10^{-8} * \bar{s_\ell}^2 - 8.6561*10^{-5} * \bar{s_\ell} - 0.9149 \\
-		w2 = 3.8259*10^{-9} * \bar{s_\ell}^2 - 3.1247*10^{-6} * \bar{s_\ell} + 0.0068
-	\end{split}
+	\begin{aligned}
+		b1       & = -3.3299\times{}10^{-9} s_\ell^2 - 1.5982\times{}10^{-5} s_\ell + 0.05711                    \\
+		a1       & = -3.0164\times{}10^{-8} s_\ell^2 + 3.3929\times{}10^{-5} s_\ell - 0.91092                    \\
+		w1       & = 1.4014\times{}10^{-8} s_\ell^2 - 2.6372\times{}10^{-5} s_\ell + 0.01952                     \\
+		\beta_0  & = -4.8261\times{}10^{-8} \bar{s_\ell}^2 - 1.3554\times{}10^{-4} \bar{s_\ell} + 0.8171 \\
+		\beta_1  & = 5.7969\times{}10^{-8} \bar{s_\ell}^2 + 8.1357\times{}10^{-5} \bar{s_\ell} - 0.7485  \\
+		\alpha_1 & = 2.9771\times{}10^{-8} \bar{s_\ell}^2 - 8.6561\times{}10^{-5} \bar{s_\ell} - 0.9149  \\
+		w2       & = 3.8259\times{}10^{-9} \bar{s_\ell}^2 - 3.1247\times{}10^{-6} \bar{s_\ell} + 0.0068
+	\end{aligned}
 \end{equation}
 
 \begin{equation}
 	\label{eq:lpv-fs9}
-	\begin{split}
-		b1 = -4.2490*10^{-12} * sl^3 + 3.4291*10^{-9} * sl^2 - 1.5999*10^{-5} * sl + 0.0568                                     \\
-		a1 = 9.5100*10^{-12} * sl^3 - 4.7554*10^{-8} * sl^2 + 4.3890*10^{-5} * sl - 0.9112                                      \\
-		w1 = -2.3370*10^{-11} * sl^3 + 6.6704*10^{-8} * sl^2 - 5.7759*10^{-5} * sl + 0.0237                                     \\
-		\beta_0 = 2.0229*10^{-10} * \bar{s_\ell}^3 - 4.7445*10^{-7} * \bar{s_\ell}^2 + 1.1916*10^{-4} * \bar{s_\ell} + 0.7532   \\
-		\beta_1 = -2.5343*10^{-10} * \bar{s_\ell}^3 + 6.2283*10^{-7} * \bar{s_\ell}^2 - 2.8674*10^{-4} * \bar{s_\ell} - 0.6551  \\
-		\alpha_1 = -5.5237*10^{-11} * \bar{s_\ell}^3 + 1.4785*10^{-7} * \bar{s_\ell}^2 - 1.5578*10^{-4} * \bar{s_\ell} - 0.8992 \\
-		w2 = 8.1120*10^{-11} * \bar{s_\ell}^3 - 1.8802*10^{-8} * \bar{s_\ell}^2 + 1.6462*10^{-4} * \bar{s_\ell} + 0.0017
-	\end{split}
+	\begin{aligned}
+		b1       & = -4.2490\times{}10^{-12} s_\ell^3 + 3.4291\times{}10^{-9} s_\ell^2 - 1.5999\times{}10^{-5} s_\ell + 0.0568                               \\
+		a1       & = 9.5100\times{}10^{-12} s_\ell^3 - 4.7554\times{}10^{-8} s_\ell^2 + 4.3890\times{}10^{-5} s_\ell - 0.9112                                \\
+		w1       & = -2.3370\times{}10^{-11} s_\ell^3 + 6.6704\times{}10^{-8} s_\ell^2 - 5.7759\times{}10^{-5} s_\ell + 0.0237                               \\
+		\beta_0  & = 2.0229\times{}10^{-10} \bar{s_\ell}^3 - 4.7445\times{}10^{-7} \bar{s_\ell}^2 + 1.1916\times{}10^{-4} \bar{s_\ell} + 0.7532  \\
+		\beta_1  & = -2.5343\times{}10^{-10} \bar{s_\ell}^3 + 6.2283\times{}10^{-7} \bar{s_\ell}^2 - 2.8674\times{}10^{-4} \bar{s_\ell} - 0.6551 \\
+		\alpha_1 & = -5.5237\times{}10^{-11} \bar{s_\ell}^3 + 1.4785\times{}10^{-7} \bar{s_\ell}^2 - 1.5578\times{}10^{-4} \bar{s_\ell} - 0.8992 \\
+		w2       & = 8.1120\times{}10^{-11} \bar{s_\ell}^3 - 1.8802\times{}10^{-8} \bar{s_\ell}^2 + 1.6462\times{}10^{-4} \bar{s_\ell} + 0.0017
+	\end{aligned}
 \end{equation}
 
 As equações~\eqref{eq:lpv-polynom-L} e~\eqref{eq:lpv-polynom-sl} podem ser
@@ -769,15 +1056,15 @@ reescritas no formato de espaço de estados como
 
 \begin{equation}
 	\label{eq:lpv-ss}
-	\begin{split}
-		x(k) = 
+	\begin{aligned}
+		x(k)   & =
 		\begin{bmatrix}
 			x_1(L,k) \\
 			x_2(s_\ell,k)
 		\end{bmatrix} \\
-		x(k+1) =
+		x(k+1) & =
 		\begin{bmatrix}
-			-\alpha{}(\bar{s_\ell}) &  \beta_1(\bar{s_\ell}) - \beta_0(\bar{s_\ell})a_1(s_\ell) \\
+			-\alpha{}(\bar{s_\ell}) & \beta_1(\bar{s_\ell}) - \beta_0(\bar{s_\ell})a_1(s_\ell) \\
 			0                       & -\alpha{}(s_\ell)
 		\end{bmatrix}
 		x(k) +
@@ -785,13 +1072,13 @@ reescritas no formato de espaço de estados como
 			\beta_0(\bar{s_\ell})b_1(s_\ell) \\
 			b_1(s_\ell)
 		\end{bmatrix}
-		u(0,k) \\
-		y(L,k) = 
+		u(0,k)                     \\
+		y(L,k) & =
 		\begin{bmatrix}
 			1 & 0
 		\end{bmatrix}
 		x(k).
-	\end{split}
+	\end{aligned}
 \end{equation}
 
 Os modelos levantados por~\textcite{masterthesis:nelson} estão discretizados com
@@ -813,6 +1100,34 @@ filtro de ruídos. Porém sua formulação requer a covariança das variações 
 estados. Já o observador exponencial requer apenas a covariança da saída e
 possui uma variável para ajustar a velocidade de convergência facilmente.
 
+\subsection{Observabilidade}%
+\label{subsec:observability}
+
+Observabilidade é a medida de quão bem os estados internos de um sistema podem
+ser estimados a partir de suas saídas. Formalmente um sistema é dito observável
+se para qualquer sequência de estados e sinais de controle, o estado atual pode
+ser determinado em tempo finito usando apenas as saídas. Se o sistema não é
+observável, então existe pelo menos um estado que não pode ser determinado
+apenas pela saída.
+
+Para sistemas invariantes no tempo em espaço de estados com \( n \) estados, se
+o posto da matriz \( L_o \) da equação~\eqref{eq:observability-matrix} for igual
+a \( n \), o sistema é dito observável. A ideia por traz deste teste é que, se a
+matriz contém \( n \) linhas linearmente independentes, então os \( n \) estados
+podem ser vistos como combinações lineares da saída.
+
+\begin{equation}
+	\label{eq:observability-matrix}
+	L_o = \begin{bmatrix}
+		C    \\
+		CA   \\
+		CA^2 \\
+		CA^{n-1}
+	\end{bmatrix}
+\end{equation}
+
+No caso desse trabalho o sistema é observável.
+
 \subsection{Filtro de Kalman}%
 \label{subsec:kalman}
 
@@ -823,10 +1138,10 @@ sujeito a ruídos gaussianos de média nula e não correlacionados \( v \) e \( 
 
 \begin{equation}
 	\label{eq:observer-noisy-model}
-	\begin{split}
-		x(k+1) = Ax(k) + Bu(k) + v(k) \\
-		y(k) = Cx(k) +Du(k) + w(k).
-	\end{split}
+	\begin{aligned}
+		x(k+1) & = Ax(k) + Bu(k) + v(k) \\
+		y(k)   & = Cx(k) +Du(k) + w(k).
+	\end{aligned}
 \end{equation}
 
 Para sistemas descritos desta forma, o Teorema~\ref{theorem:kalman} define o
@@ -839,11 +1154,11 @@ observador de Kalman.
 
 	\begin{equation}
 		\label{eq:kalman-definition}
-		\begin{split}
-			P(\infty)=A(P(\infty)-P(\infty)C^T{(\Gamma+CP(\infty)C^T)}^{-1}CP(\infty))A^T+\Theta \\
-			K_{ob}(\infty)=AP(\infty)C^T{(\Gamma+CP(\infty)C^T)}^{-1} \\
-			\hat{x}(k+1) = A\hat{x}(k) + Bu(k) + K_{ob}(\infty)(y(k) - C\hat{x}(k))-Du(k)
-		\end{split}
+		\begin{aligned}
+			P(\infty)      & =A(P(\infty)-P(\infty)C^T{(\Gamma+CP(\infty)C^T)}^{-1}CP(\infty))A^T+\Theta \\
+			K_{ob}(\infty) & =AP(\infty)C^T{(\Gamma+CP(\infty)C^T)}^{-1}                                 \\
+			\hat{x}(k+1)   & = A\hat{x}(k) + Bu(k) + K_{ob}(\infty)(y(k) - C\hat{x}(k))-Du(k)
+		\end{aligned}
 	\end{equation}
 
 	provê um observador  ótimo para o sistema~\eqref{eq:observer-noisy-model}.
@@ -869,7 +1184,7 @@ iterativo de \( P(\infty) \) até sua convergência.
 \subsection{Observador exponencial com fator de esquecimento}%
 \label{subsec:exponential-observer}
 
-O observador exponecial com fator de esquecimento\cite{Ticlea2009} também é um
+O observador exponecial com fator de esquecimento\cite{article:ticlea} também é um
 observador do tipo Kalman. Isso pode ser visto em sua estrutura. Sua formulação
 é dada pelo Teorema~\ref{theorem:exponential-observer}.
 
@@ -882,11 +1197,11 @@ observador do tipo Kalman. Isso pode ser visto em sua estrutura. Sua formulaçã
 
 	\begin{equation}
 		\label{eq:exponential-observer-definition}
-		\begin{split}
-			P(\infty)=\delta^{-1}A(P(\infty)-KCP(\infty))A^T \\
-			K_{ob}(\infty)=AP(\infty)C^T{(\Gamma+CP(\infty)C^T)}^{-1} \\
-			\hat{x}(k+1) = A\hat{x}(k) + Bu(k) + K_{ob}(\infty)(y(k) - C\hat{x}(k))-Du(k).
-		\end{split}
+		\begin{aligned}
+			P(\infty)      & =\delta^{-1}A(P(\infty)-KCP(\infty))A^T                           \\
+			K_{ob}(\infty) & =AP(\infty)C^T{(\Gamma+CP(\infty)C^T)}^{-1}                       \\
+			\hat{x}(k+1)   & = A\hat{x}(k) + Bu(k) + K_{ob}(\infty)(y(k) - C\hat{x}(k))-Du(k).
+		\end{aligned}
 	\end{equation}
 \end{theorem}
 
@@ -894,28 +1209,65 @@ Na equação~\eqref{eq:exponential-observer-definition}, \( \delta{} \) é um
 número real que controla a velocidade de convergência do observador. Quanto
 menor \( \delta{} \), mais rápido o observador converge.
 
-\subsection{Observabilidade}%
-\label{subsec:observability}
+\section{PI por síntese direta}%
+\label{sec:pi-direct-synthesis}
 
-Observabilidade é a medida de quão bem os estados internos de um sistema podem
-ser estimados a partir de suas saídas. Formalmente um sistema é dito observável
-se para qualquer sequência de estados e sinais de controle, o estado atual pode
-ser determinado em tempo finito usando apenas as saídas. Se o sistema não é
-observável, então existe pelo menos um estado que não pode ser determinado
-apenas pela saída.
+O desenvolvimento de controladores PI por síntese direta é uma forma de obter
+controladores a partir da resposta desejada do sistema em malha fechada. Isso é
+feito igualando a equação da malha fechada com o controlador à uma resposta de
+grau compátivel desejada. Por exemplo, o controlador PI pode ser escrito como
+%
+\begin{equation}
+	C(s) = K_c (1 + \frac{1}{T_{i}s}),
+\end{equation}
+%
+em que \(K_c\) e \(T_i\) são parâmetros do controlador. Para um sistema de
+primeira ordem a equaçãdo de malha fechada com esse controlador é dada por
+%
+\begin{equation}
+	\frac{Y(s)}{R(s)} = \frac{\frac{T_i}{K_c}s}{(\frac{\tau{}T_i}{KK_c}-T_i)s^2+(\frac{T_i}{KK_c}+T_i)s+1}.
+\end{equation}
 
-Para sistemas invariantes no tempo em espaço de estados com \( n \) estados, se
-o posto da matriz \( L_o \) da equação~\eqref{eq:observability-matrix} for igual
-a \( n \), o sistema é dito observável. A ideia por traz deste teste é que, se a
-matriz contém \( n \) linhas linearmente independentes, então os \( n \) estados
-podem ser vistos como combinações lineares da saída.
+Se a dinâmica de malha fechada desejada dor definida como
+%
+\begin{equation}
+	{\left(\frac{Y(s)}{R(s)}\right)}_d = \frac{K_{d}s}{{(T_{d}s+1)}^2},
+\end{equation}
+%
+pode-se igualar as respostas de forma a encontrar os valores de \(K_c\) e
+\(T_i\) que tornam a equação verdadeira.
+
+Há várias receitas de controladores PID e suas variações seguindo esse
+princípio. Elas se diferenciam pela forma como o controlador ou a resposta
+desejada é escrita e pela forma como os parâmetros são isolados.
+
+\section{Índices de desempenho}%
+\label{sec:indexes}
+
+A comparação entre controladores não é uma tarefa fácil, dado que não existe uma
+forma de definir os conceitos melhor e pior para os mesmos. Utiliza-se portanto
+índices que quantificam a resposta com base em algum fator, como o tempo de
+transitório, tempo de subida, erro em regime permanente, e variação do sinal de
+controle, entre outros.
+
+Para comparar os controladores propostos utilizou-se dois índices, o
+\(IA\Delta{}X\) e o IAE\@. O primeiro mede a variação do sinal, e foi utilizado
+para medir a variação do sinal de controle e da saída. Seu cálculo se dá
+conforme a Equação~\eqref{eq:ivx}.
 
 \begin{equation}
-	\label{eq:observability-matrix}
-	L_o = \begin{bmatrix}
-		C       \\
-		CA      \\
-		CA^2    \\
-		CA^{n-1}
-	\end{bmatrix}
+	\label{eq:ivx}
+	IA\Delta{}X(x\in{}R^N) = \sum_{i=2}^{N}{\left|x_i-x_{i-1}\right|}
+\end{equation}
+
+O índice IAE quantifica a resposta do sistema de acordo com a integral da norma
+do erro. Ele pode ser utilizado para comparar tanto o transitório quanto o
+regime permantente do sistema. No entanto, o sinal utilizado no cálculo deve
+conter apenas o transitório ou apenas o regime permanente do sinal, e jamais uma
+mistura dos dois. Sua fórmula pode ser vista na Equação~\eqref{eq:iae}, onde
+\(r\) é a referência utilizada na obtenção da curva de saída \(y\).
+
+\begin{equation}
+	\label{eq:iae}
+	IAE(r,y) = \int{\left|r-y\right|}dt
 \end{equation}

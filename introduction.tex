@@ -6,50 +6,53 @@
 
 Controle preditivo por modelo (\ac{MPC} --- \textit{Model Predictive Control}) é
 uma técnica de controle avançada que utiliza o modelo do sistema para prever a
-saída em momentos futuros e, com isso, gerar uma estratégia de controle. Esta
-técnica pode ser aplicada em modelos contínuos quanto discretos. A abordagem
-discreta será usada pois melhor ilustra o funcionamento do \ac{MPC}, além de
-fornecer ao controlador mais tempo para o processamento do próximo sinal de
-controle.
+saída em momentos futuros e, com isso, gerar uma estratégia de controle que
+otimize algum critério quadrático selecionado. Esta técnica pode ser aplicada em
+modelos contínuos quanto discretos. A abordagem discreta no tempo é usada neste
+trabalho, pois melhor ilustra o funcionamento do \ac{MPC}, além de fornecer ao
+controlador mais tempo para o processamento do próximo sinal de controle. Note
+que a restrição de tempo para processamento do MPC pode ser crítica em algumas
+aplicações, pois um problema de otimização deve ser resolvido a cada iteração.
 
 Em um modelo discreto o sinal é amostrado a cada \( \Delta{}t \) segundos. O
-modelo não varia mais diretamente com o tempo, mas sim com o instante de
-amostragem \( k \), que se associa com o tempo através do tempo de amostragem
-como \( t = k\Delta{}t \). Assim, em um modelo discreto, ao se passar do tempo
-\( 0 \) para o tempo \( \Delta{}t \) ou do tempo \( \Delta{}t \) para o tempo
-\( 2\Delta{}t \), dizemos que se passou um instante.
+modelo não varia mais diretamente com o tempo, mas sim com a amostragem \( k \),
+que se associa com o tempo como \( t = k\Delta{}t \). Assim, em um modelo
+discreto, ao se passar do tempo \( 0 \) para o tempo \(\Delta{}t \) ou do tempo
+\( \Delta{}t \) para o tempo \( 2\Delta{}t \), dizemos que se passou um
+instante.
 
 Utilizando um modelo discreto pode-se então prever a saída do sistema para um
-instante futuro, se as entradas que serão aplicadas ao sistema nos instantes
+instante futuro, se as entradas que foram aplicadas ao sistema nos instantes
 anteriores forem conhecidas. Pode-se então prever as saídas dos próximos \(N_p\)
-instantes e utilizar técnicas de otimização para obtermos os próximos \(N_c\)
-sinais de controle ótimos que levarão o sistema à referência. Ao utilizar apenas
-o primeiro sinal de controle e recalcular os sinais de controle ótimos a todo
-instante, o controlador será capaz de rejeitar ruídos e reagir a mudanças, como
-a da referência. Esta técnica é chamada de Controle por Horizonte Recessivo e é
-a base do \ac{MPC}~\cite{book:wang}.
+instantes (chamado horizonte de predição) e utilizar técnicas de otimização para
+obtermos os próximos \(N_c\) sinais de controle (chamado horizonte de controle)
+ótimos que levarão o sistema à referência. Ao utilizar apenas o primeiro sinal
+de controle e recalcular os sinais de controle ótimos a todo instante, o
+controlador será capaz de rejeitar ruídos e reagir a mudanças, como a da
+referência. Esta técnica é chamada de Controle por Horizonte Recessivo e é a
+base do \ac{MPC}~\cite{book:wang}.
 
-A discretização foi feita no tempo, pois altera-se o modelo para que este não
+A discretização foi feita no tempo, pois altera-se o modelo para que esse não
 mais dependa do tempo mas sim de um instante. Sistemas que dependem apenas do
 tempo são chamados de sistemas a parâmetros concentrados (\ac{SPC}). No entanto
-existem sistemas que não variam apenas no tempo, mas também no espaço, por
-exemplo. Um exemplo é a transferência de calor em uma barra metálica, em que a
-temperatura depende tanto do tempo quanto do ponto no espaço em que se faz a
-medição. Sistemas que dependem de mais de uma variável são chamados de sistemas
-a parâmetros distribuídos (\ac{SPD}). Sua modelagem é feita utilizando derivadas
-parciais e equações diferenciais parciais (\ac{EDP})~\cite{masterthesis:nelson}.
+existem sistemas que não variam apenas no tempo, mas também no espaço. Um
+exemplo é a transferência de calor em uma barra metálica, em que a temperatura
+depende tanto do tempo quanto do ponto no espaço em que se faz a medição.
+Sistemas que dependem de uma variável espacial são chamados de sistemas a
+parâmetros distribuídos (\ac{SPD}). Sua modelagem é feita utilizando derivadas
+parciais e equações diferenciais parciais (\ac{EDP})~\cite{phdthesis:caldeira}.
 
 Para ambos tipos de modelos é comum usar a modelagem por espaço de estados ao se
-trabalhar com \ac{MPC}. Isso permite controlar facilmente sistemas com múltiplas
-entradas e múltiplas saídas. No entanto, ao se trabalhar com espaço de estados,
-é necessário que o valor de todos os estados sejam conhecidos, o que nem sempre
-é possível, seja por limitações do sistema ou até mesmo físicas. Para resolver
-este problema utiliza-se observadores.
+trabalhar com \ac{MPC}. Isso permite projetar mais facilmente sistemas com
+múltiplas entradas e múltiplas saídas. No entanto, ao se trabalhar com espaço de
+estados, é necessário que o valor de todos os estados sejam conhecidos, o que
+nem sempre é possível, seja por limitações do econômicas ou até mesmo físicas.
+Para resolver esse problema utilizam-se observadores.
 
 O observador é um sistema que estima os estados de um modelo baseado nas
 entradas e saídas do mesmo. O observador de Kalman, também conhecido como filtro
-de Kalman, é uma formulação que permite estimar o modelo de forma precisa mesmo
-na presença de ruídos, seja na leitura da saída ou dos próprios
+de Kalman, é uma formulação que permite estimar sinais de forma ótima na
+presença na presença de ruídos, seja na leitura da saída ou dos próprios
 estados~\cite{book:wang}.
 
 \section{Definição do Problema}%
@@ -60,10 +63,10 @@ Laboratório de Sinais e Sistemas. Nela podemos ver os sensores \(S_1\) a \(S_5\
 e o fluxo de ar quente \( q \). Imagine que queiramos controlar a temperatura na
 posição onde encontra-se o sensor \(S_3\), mas que apenas o sensor \(S_5\)
 esteja funcionando. Com um modelo \ac{SPD} podemos ter dois modelos \ac{SPC}\@:
-um que modele o fluxo de temperatura até o sensor \(S_3\) e um outro que modele
-de \(S_3\) até \(S_5\), ambos interconectados. Desta forma podemos utilizar um
-observador e a leitura do sensor \(S_5\) para estimar a temperatura no sensor
-\(S_3\), e controlá-la mesmo sem fazer sua medição direta.
+um que modele o fluxo de temperatura a partir do atuador até o sensor \(S_3\) e
+um outro que modele de \(S_3\) até \(S_5\), ambos interconectados. Desta forma,
+podemos utilizar um observador e a leitura do sensor \(S_5\) para estimar a
+temperatura no sensor \(S_3\), e controlá-la mesmo sem fazer sua medição direta.
 
 \begin{figure}[ht!]
     \centering
@@ -77,10 +80,11 @@ observador e a leitura do sensor \(S_5\) para estimar a temperatura no sensor
 \label{sec:objectives}
 
 O objetivo desse trabalho é desenvolver um controlador do tipo \ac{MPC} com
-restrições com modelo \ac{SPD} utilizando observadores do tipo Kalman e
-implementá-lo utilizando e adaptando a plataforma de controle desenvolvida pelo
-proponente para uso no forno do laboratório de sinais e sistemas. O objetivo
-pode ser assim dividido:
+restrições na amplitude do sinal de controle e estados do sistema com modelo
+\ac{SPD} utilizando observadores do tipo Kalman e implementá-lo utilizando e
+adaptando a plataforma de controle desenvolvida pelo proponente para uso no
+forno do laboratório de sinais e sistemas. Para alcançar esse objetivo as
+seguintes ações foram realizadas:
 
 \begin{itemize}
       \item modificar a eletrônica da planta: instalar circuitos
@@ -99,9 +103,8 @@ pode ser assim dividido:
             plataforma de controle para implementar o controlador e executar o
             controle da planta;
       \item comparar o desempenho do controlador: usar índices de desempenho
-            para comparar o desempenho do controlador \ac{MPC} com controladores
-            PI ou PID a serem desenvolvidos utilizando as técnicas
-            de~\textcite{article:clarke} e~\textcite{article:martins};
+            para comparar o desempenho do controlador \ac{MPC} com controlador
+            PI ou PID, desenvolvido utilizando síntese direta;
       \item realizar melhorias na plataforma: ao utilizar a plataforma como
             usuário, espera-se encontrar dificuldades, erros e novas ideias que
             serão corrigidos/implementadas, como, por exemplo, recuperação de
@@ -119,10 +122,10 @@ restrições físicas (como, por exemplo, colocar um sensor no centro de um
 alto-forno) ou por questões financeiras.
 
 A escolha do controlador \ac{MPC} se tornou interessante por ser uma técnica
-avançada de controle que ainda não é estudada no \textit{campus V}. Assim, além
-da possibilidade de estudar uma técnica avançada, este trabalho contribui por
-ser o primeiro trabalho a utilizar tal controlador no Grupo de Modelagem e
-Controle de Sistemas Mecatrônicos.
+avançada de controle que ainda não é amplamente estudada no \textit{campus V}.
+Assim, além da possibilidade de estudar uma técnica avançada, este trabalho
+contribui por ser o primeiro trabalho a utilizar tal controlador no Grupo de
+Modelagem e Controle de Sistemas Mecatrônicos.
 
 \section{Estado da arte}%
 \label{sec:estado-da-arte}

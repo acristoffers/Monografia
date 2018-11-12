@@ -1,16 +1,65 @@
 % !TeX root = document.tex
 % !TeX encoding = UTF-8 Unicode
 
-\chapter{Conclusão}%
+\chapter{Considerações finais}%
 \label{chp:conclusion}
 
-Apesar do contratempo encontrado durante a validação dos modelos e observadores,
-o progresso dos trabalhos pode ser considerado satisfatório. Foi possível testar
-o controlador em outro sistema e perceber suas vantagens, além de experimentar
-duas formulações diferentes de observadores. As modificações feitas na
-plataforma já foram utilizadas por membros do Grupo de Modelagem e Controle de
-Sistemas Mecatrônicos que reportaram benefícios advindos das melhorias.
+Os controladores PI e MPC apresentaram respostas parecidas. No entanto, o
+controlador MPC obteve uma resposta até 27\% melhor segundo o índice IVu, o que
+se traduz em economia de energia por menos mudanças no atuador. Já o ITAE mostra
+o MPC com uma vantagem de até 15\% sobre o PI.\@
 
-No segundo semestre será estudada a formulação por funções de Laguerre do
-controlador \ac{MPC} e projetados controladores PID e \ac{MPC} para o forno. A
-implementação de melhorias na plataforma será continuada.
+Estudos futuros poderiam utilizar outro sistema para melhor explorar os pontos
+chaves do MPC, que são a saturação de atuadores, sinal de saída e variação do
+sinal de controle, bem como o uso de múltiplas entradas e múltiplas saídas e de
+ordem elevadas sem modificação do \textit{framework} do controlador. Esses casos
+não foram abordados pois o modelo de interesse, que é SISO de segunda ordem, foi
+linearizado longe da saturação do atuador.
+
+A modelagem do sistema a parâmetros distribuídos via subsistemas interconectados
+possibilitou o controle da temperatura em um ponto onde não há sensor. Foi
+detectada a necessidade de melhorar o modelo, inserindo a temperatura ambiente
+como parâmetro de entrada, mas isso não foi impedimento para a realização do
+controle. A alternativa utilizada não se mostrou viável e recomenda-se que o
+modelo seja melhorado. Uma alternativa baseada em observadores também pode ser
+estudada.
+
+Os observadores não funcionaram conforme esperado. Independente dos valores
+ajustáveis (\(R\) e \(Q\)) o estado estimado sempre converge para um valor e não
+mais varia junto com o estado medido, a não ser que a variação desse seja
+grande. O efeito é aquele de um filtro, mas ignorando a matriz de covariança.
+Assim, para trabalhos futuros, recomenda-se o estudo de desenvolvimento e
+implementação de observadores, visando, principalmente, resolver o problema
+encontrado no modelo.
+
+A partir do trabalho aqui desenvolvido foi publicado um artigo na revista romena
+\textit{Studies in Informatics and Control}, volume 27, número 3, de setembro de
+2018 entitulado \href{https://doi.org/10.24846/v27i3y201802}{\textit{Affordable
+Control Platform with MPC Application}} (Plataforma de Controle de Baixo Custo
+com aplicação de MPC). O trabalho envolve duas das principais áreas desse
+trabalho, o controlador MPC e a plataforma de controle. O resumo do trabalho é
+apresentado, traduzido, a seguir.
+
+\begin{quote}
+    Este artigo apresenta uma plataforma de controle desenvolvida para
+    interfacear com vários hardwares, permitindo o design e a rápida
+    implementação até mesmo de controladores avançados, tanto em sistemas
+    acadêmicos quanto industriais. O código dos controladores é escrito na
+    linguagem Python, de código aberto, facilitando a tradução de código
+    normalmente escrito em software comercial. A plataforma proposta pode usar
+    desde Arduinos até Computadores Lógicos Programáveis ​​(PLCs). Além da
+    pesquisa e testes em instalações industriais, a simplicidade da plataforma
+    proposta permite seu uso também para fins educacionais e de treinamento.
+    Portanto, a plataforma proposta pode ajudar os alunos a se concentrarem na
+    análise de sistemas e na teoria de controle, em vez de problemas de
+    interface de hardware, enquanto usam hardware de baixo custo. Desenvolvida
+    em um esquema cliente-servidor, a plataforma pode ser executada em
+    computadores acessíveis, aproveitando as ferramentas matemáticas e gráficas
+    de alto nível disponíveis na linguagem Python, permitindo a rápida
+    implementação de controladores avançados. O uso desta plataforma é ilustrado
+    com a implementação de um controle preditivo modelo (MPC) de um controle de
+    nível em um processo em escala de laboratório. Um PLC é usado para tomar as
+    medidas de nível, para despachar sinais de controle e também para
+    intertravar tarefas seguras. O controlador é executado em um computador
+    Raspberry Pi que se comunica com o PLC por meio de um link Ethernet.
+\end{quote}

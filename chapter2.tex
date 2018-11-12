@@ -4,10 +4,10 @@
 \chapter{Revisão da literatura}%
 \label{chp:bibliography-review}
 
-A malha fechada foi formalizada matematicamente em 1868 por Maxwell. Em
-1927~\textcite{article:black} demonstrou a utilidade da realimentação negativa
-nos laboratórios da Bell onde aplicou a malha fechada com realimentação negativa
-nos amplificadores das linhas de transmissão.
+A malha fechada foi formalizada matematicamente em 1868 por Maxwell.
+\textcite{article:black} demonstrou a utilidade da realimentação negativa nos
+laboratórios da Bell onde aplicou a malha fechada com realimentação negativa nos
+amplificadores das linhas de transmissão.
 
 No entanto, ao ampliar o sinal, foi ampliado também o ruído. Para resolver este
 problema iniciaram-se estudos para utilizar técnicas descritas por Laplace,
@@ -16,10 +16,10 @@ sistemas dinâmicos. O problema passou a ser filtrar as frequências desejadas d
 forma a não aplicar o ganho da malha fechada no rúido~\cite{book:bryson}.
 
 Nyquist e~\textcite{article:bode} criaram ferramentas na década de 1930 que
-permitem quantizar a estabilidade de um sistema em malha fechada. O uso de tais
-ferramentas facilitou o desenvolvimento de controladores que alteram a dinâmica
-do sistema para uma dinâmica desejada. A adição de ferramentas estocásticas
-permitiu também o desenvolvimento de filtros ótimos.
+permitem quantificar a estabilidade de um sistema em malha fechada. O uso de
+tais ferramentas facilitou o desenvolvimento de controladores que alteram a
+dinâmica do sistema para uma dinâmica desejada. A adição de ferramentas
+estocásticas permitiu também o desenvolvimento de filtros ótimos.
 
 Com estas técnicas estabeleceu-se o que chamamos de controle clássico. Este é
 caracterizado pelo desenvolvimento no domínio da frequência e pelo uso de
@@ -36,22 +36,23 @@ problemas da indústria aeroespacial~\cite{article:lyapunov}.
 Várias técnicas foram desenvolvidas nesta época. Uma se destaca: \ac{DMC} ---
 \textit{Dynamic Matrix Control}. Ela visa resolver os problemas de controle
 multivariável com restrições, típico nas indústrias química e petroquímica.
-Antes do desenvolvimento desta técnica o controle era feito por várias malhas em
+Antes do desenvolvimento dessa técnica o controle era feito por várias malhas em
 cascata~\cite{article:cutler}.
 
-Seu impacto na indústria foi gigante. Provavelmente não há nenhuma empresa
-extratora de petróleo que não utilize esta técnica ou uma derivada. O
-desenvolvimento do \ac{MPC} se deu como uma tentativa de entender o \ac{DMC},
-que parecia desafiar a análise teórica tradicional por ser formulado de maneira
-não convencional. Por exemplo, outra técnica, a \ac{IMC} --- \textit{Internal
-Model Control} --- falhou em explicar o funcionamento da DMC mas acabou ajudando
-no desenvolvimento do controle robusto~\cite{article:morari}.
+Seu impacto na indústria foi gigante~\cite{article:morari}. Provavelmente não há
+nenhuma empresa extratora de petróleo que não utilize esta técnica ou uma
+derivada. O desenvolvimento do \ac{MPC} se deu como uma tentativa de entender o
+\ac{DMC}, que parecia desafiar a análise teórica tradicional por ser formulado
+de maneira não convencional. Por exemplo, outra técnica, a \ac{IMC} ---
+\textit{Internal Model Control} --- falhou em explicar o funcionamento do \ac{DMC}
+mas acabou ajudando no desenvolvimento do controle
+robusto~\cite{article:morari}.
 
-Hoje em dia o controle preditivo é formulado sempre em espaço de estados, mesmo
-que seja possível sua formulação por, por exemplo, funções de transferência.
-O controle preditivo por modelo é uma das formas de controle desenvolvidas com
-a ideia de buscar a trajetória ótima de controle, que observa-se sempre existir
-em sistemas dinâmicos. Para isso é utilizada a otimização custo, normalmente uma
+Hoje em dia o controle preditivo pode ser formulado no espaço de estados, mesmo
+que seja possível sua formulação por, por exemplo, funções de transferência. O
+controle preditivo por modelo é uma das formas de controle desenvolvidas com a
+ideia de buscar a trajetória ótima de controle, que observa-se sempre existir em
+sistemas dinâmicos. Para isso é utilizada a otimização custo, normalmente uma
 função de energia~\cite{article:morari,book:bryson}.
 
 O grande problema destes controladores hoje é o custo computacional quando se

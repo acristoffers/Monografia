@@ -26,9 +26,9 @@
   \pagestyle{cefetchapter}
   \pagenumbering{roman}
   \input{titlepage}
-  % \input{dedicatoria}
-  % \input{agradecimento}
-  % \input{miss_brasil}
+  \input{dedicatoria}
+  \input{agradecimento}
+  \input{miss_brasil}
   \input{abstract}
 
   \pdfbookmark[0]{\contentsname}{toc}
@@ -36,6 +36,7 @@
   \thispagestyle{plain}
   \cleardoublepage{}
 
+  \renewcommand{\listfigurename}{Lista de figuras}
   \listoffigures*{}
   \thispagestyle{plain}
   \cleardoublepage{}
@@ -52,7 +53,10 @@
   \aliaspagestyle{chapter}{cefetchapter}
 
   \newtheorem{theorem}{Teorema}
-
+  
+  \counterwithin{figure}{chapter}
+  \counterwithin{table}{chapter}
+  
   \input{introduction}
   \cleardoublepage{}
   \input{chapter2}
