@@ -155,7 +155,8 @@ referência.
 	\centering
 	\caption{Valores utilizados na calibração}%
 	\label{tbl:calib-coefs}
-	\begin{tabular}{c|ccccccc}
+	\begin{tabular}{@{}c|ccccccc@{}}
+		\toprule
 		           & 110  & 105  & 100  & 95   & 90   & 85   & 80   \\ \midrule
 		\(S_2\)    & 109  & 105  & 100  & 94   & 89   & 84   & 80   \\
 		\(S_3\)    & 109  & 105  & 100  & 95   & 90   & 85   & 80   \\
@@ -167,7 +168,7 @@ referência.
 		\(S_9\)    & 110  & 105  & 100  & 95   & 90   & 85   & 80   \\
 		\(S_{10}\) & 109  & 104  & 99   & 94   & 90   & 84   & 80   \\
 		\(T_1\)    & 90.5 & 88.0 & 84.3 & 80.2 & 76.3 & 72.1 & 68.0 \\
-		\(T_2\)    & 90.6 & 87.9 & 84.5 & 80.6 & 76.3 & 72.2 & 68.1
+		\(T_2\)    & 90.6 & 87.9 & 84.5 & 80.6 & 76.3 & 72.2 & 68.1 \\ \bottomrule
 	\end{tabular}
 \end{table}
 
@@ -401,12 +402,12 @@ Tabela~\ref{tbl:indexes}.
 	\centering
 	\caption{Índices de desempenho}%
 	\label{tbl:indexes}
-	\begin{tabular}{ccccc}
-		        & IAE & ITAE   & \(IA\Delta{}y\) & \(IA\Delta{}u\) \\ \midrule
-		MPC 350 & 430 & 115855 & 24              & 114             \\ \midrule
-		MPC 875 & 907 & 299466 & 23              & 118             \\ \midrule
-		PI 350  & 326 & 132840 & 22              & 144             \\ \midrule
-		PI 875  & 952 & 325313 & 23              & 120
+	\begin{tabular}{@{}lllll@{}}
+				& IAE  & ITAE & \(IA\Delta{}y\) & \(IA\Delta{}u\) \\ \toprule
+		MPC 350 & 1.32 & 1    & 1.09            & 1               \\ 
+		PI 350  & 1    & 1.15 & 1               & 1.26            \\ \midrule
+		MPC 875 & 1    & 1    & 1               & 1               \\ 
+		PI 875  & 1.05 & 1.09 & 1               & 1.01            \\ \bottomrule
 	\end{tabular}
 \end{table}
 
