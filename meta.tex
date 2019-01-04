@@ -64,6 +64,7 @@
 %\usepackage{fancyhdr} % Set headers and footers
 \usepackage[Lenny]{fncychap} % Square chapter
 \usepackage{acro} % abbreviations and accronyms
+\usepackage{tocloft}
 
 \usetikzlibrary{shapes,arrows}
 
@@ -93,3 +94,9 @@
 
 % more space between lines in table.
 \renewcommand{\arraystretch}{1.2}
+
+\newfloat{code}{htp}{loc}
+\floatname{code}{Código}
+\newlistof{listofcodes}{loc}{Lista de Códigos}
+\newlistentry[chapter]{code}{loc}{0}
+\cftsetindents{code}{0em}{2.3em}

@@ -94,14 +94,53 @@
 %============================== Ficha (Somente na versão final) =================================
 %================================================================================================
 
-%\epsfxsize=0.925\columnwidth
-%\epsffile{ficha.ps} % após scanear, colocar a ficha catalográfica do texto
+\includepdf[pages=-]{ficha.pdf} % após scanear, colocar a ficha catalográfica do texto
 \cleardoublepage{}
 
 %================================================================================================
 %============================== Folha de aprovação (Somente na versão final) ====================
 %================================================================================================
 
-%\epsfxsize=0.925\columnwidth
-%\epsffile{folha.ps} % após scanear, colocar a folha de aprovação do texto
+\begin{table}[]
+    \begin{tabular}{ll}
+    \multirow{3}{*}{\includegraphics[width=3cm]{imgs/cefet}} & Centro Federal de Educação Tecnológica de Minas Gerais \\
+                                                             & CEFET-MG / Divinópolis                                 \\
+                                                             & Curso de Engenharia Mecatrônica                       
+    \end{tabular}
+\end{table}
+
+\vspace*{2.0cm}
+
+Monografia entitulada \enquote{Implementação de controlador MPC em um sistema
+a parâmetros distribuídos via subsistemas interconectados}, de autoria do
+graduando Álan Crístoffer e Sousa, aprovada pela banca examinadora constituída
+pelos seguintes professores:
+
+\vspace*{1cm}
+
+\begin{center}
+    \hrulefill{}\\
+    Prof.\ Dr.\ Valter Júnior de Souza Leite
+
+    \vspace*{1cm}
+
+    \hrulefill{}\\
+    Prof.\ Me.\ Alberto Pena Lara
+
+    \vspace*{1cm}
+
+    \hrulefill{}\\
+    Prof.\ Me.\ Adriano Nogueira Drumond Lopes
+
+    \vspace*{4cm}
+
+    \hrulefill{}\\
+    Coordenador do Curso de Engenharia Mecatrônica\\
+    Prof.\ Dr.\ Lúcio Flávio Santos Patrício\\
+~\\
+    Divinópolis\\
+    Dezembro de 2018
+\end{center}
+
+\vfill{}
 \cleardoublepage{}

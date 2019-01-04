@@ -633,11 +633,16 @@ encontrar-se os coeficientes \(c_i\) tal que, para \(N\) termos,
 \end{equation}
 
 Assim, o problema de descrever o sistema se torna um problema de determinação de
-coeficientes. O seguinte código Python calcula os coeficientes e o conjunto de
+coeficientes. O Código~\ref{code:coeffs} calcula os coeficientes e o conjunto de
 funções L para um determinado sistema. Note que a entrada \textit{sys} é um
 \textit{tuple} do tipo (A, B, C, D, dt).
 
-\python{py/laguerre1.py}
+\begin{code}
+	\captionsetup{justification=centering}
+	\caption{Cálculo dos coeficientes de Laguerre}%
+	\label{code:coeffs}
+	\python{py/laguerre1.py}
+\end{code}
 
 A trajetória de controle definida como uma sequência de variações do sinal de
 controle (\(\Delta{}u\)) é vista como uma sequência de impulsos aplicados ao
@@ -694,9 +699,15 @@ Para fins de simulação,
 	x(k+1) & = Ax(k) + BL{(0)}^{T}\eta{}.
 \end{align}
 
-O seguinte código calcula as constantes \(\Omega{}\), \(\Psi{}\) e \(\Phi{}\):
+O Código~\ref{code:omega-psi-phi} calcula as constantes \(\Omega{}\), \(\Psi{}\)
+e \(\Phi{}\):
 
-\python{py/laguerre2.py}
+\begin{code}
+	\captionsetup{justification=centering}
+	\caption{Cálculo de \(\Omega{}\), \(\Psi{}\) e \(\Phi{}\)}%
+	\label{code:omega-psi-phi}
+	\python{py/laguerre2.py}
+\end{code}
 
 As restrições também devem ser reescritas, mapeando o máximos e mínimos
 desejados em \(\Delta{}U\), \(U\) e \(Y\) para \(\eta{}\). Assim, a restrição em
@@ -754,10 +765,15 @@ em que
 	\end{bmatrix}.
 \end{equation}
 
-O código Python a seguir calcula essas restrições para os primeiros termos, no
-formato utilizado pela função de minimização quadrática.
+O Código~\ref{code:restrictions} calcula essas restrições para os primeiros
+termos, no formato utilizado pela função de minimização quadrática.
 
-\python{py/laguerre3.py}
+\begin{code}
+	\captionsetup{justification=centering}
+	\caption{Cálculo das restrições}%
+	\label{code:restrictions}
+	\python{py/laguerre3.py}
+\end{code}
 \vfill{}
 
 \section{Sistemas a parâmetros distribuídos}%
