@@ -52,6 +52,19 @@ Obviamente é mais fácil instalar utilizando o terminal:
 Em qualquer plataforma, após o Python ter sido instalado, execute `pip install
 pygments --user` ou `pip3 install pygments --user` (mais provável).
 
+Se ao executar o comando `pygmentize --version` ele não seja encontrado, execute:
+
+- Linux: `echo export PATH=\"\$PATH:$($(basename $(which python3 python | head -n 1)) -m
+site --user-base)/bin\" >> .bashrc`
+- macOS: `echo export PATH=\"\$PATH:$($(basename $(which python3 python | head -n 1)) -m
+site --user-base)/bin\" >> .profile`
+
+Abra e feche o terminal e tente novamente.
+
+No Windows, o diretório retornado por `python3 -c "import pygments;
+print(pygments.__file__.replace('/site-packages/pygments/__init__.py','/bin'))"`
+deve ser adicionado ao PATH.
+
 ## Configuração do texmaker
 
 3 configurações devem ser mudadas no aplicativo:
